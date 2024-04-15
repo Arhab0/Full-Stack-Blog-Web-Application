@@ -1,0 +1,21 @@
+/* lightgreen #b9e7e7 */
+
+body{
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    width: 4px; /* width of the scrollbar */
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* color of the scrollbar handle */
+    border-radius: 5px; /* roundness of the scrollbar handle */
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* color of the scrollbar handle on hover */
+  }
+
