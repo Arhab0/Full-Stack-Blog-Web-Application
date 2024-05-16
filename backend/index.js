@@ -100,8 +100,8 @@ app.post("/logout", (req, res) => {
 // all post api
 app.get("/posts", (req, res) => {
   const q = req.query.cat
-    ? "select * from posts where cat=? "
-    : "select * from posts";
+    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id where c.cat = ?"
+    : "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id";
   db.query(q, [req.query.cat], (err, data) => {
     if (err) {
       res.json(err);
@@ -113,10 +113,8 @@ app.get("/posts", (req, res) => {
 
 // single post api
 app.get("/post/:id", (req, res) => {
-  // const q = "SELECT `username`,`title`,`description`,`cat`,`date`,p.img AS postImg,u.img AS userImg FROM users u JOIN posts p ON u.id = p.user_Id WHERE p.id = ?"
-
   const q =
-    "select p.id,username,title,description,cat,date,p.img as postImg,u.img as userImg from users as u join posts as p on u.id = p.user_id where p.id = ?";
+    "select p.id,username,title,description,c.cat,date,p.img as postImg,u.img as userImg from users as u join posts as p on u.id = p.user_id join category as c on p.cat_id = c.id where p.id = ?";
   db.query(q, [req.params.id], (err, data) => {
     if (err) {
       res.json(err);
@@ -163,14 +161,13 @@ app.post("/add-post", (req, res) => {
       return res.status(403).json({ message: "token is not valid" });
     } else {
       const q =
-        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat`,`cat_id`) values(?)";
+        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`) values(?)";
       const values = [
         req.body.title,
         req.body.description,
         req.body.img,
         req.body.date,
         userInfo.id,
-        req.body.cat,
         req.body.cat_id,
       ];
       db.query(q, [values], (err, data) => {
@@ -186,13 +183,8 @@ app.post("/add-post", (req, res) => {
 
 // update post api
 app.put("/update-post/:id", (req, res) => {
-  const q = `update posts set title=? ,description=? , cat=?, img=? where id=${req.params.id}`;
-  const values = [
-    req.body.title,
-    req.body.description,
-    req.body.cat,
-    req.body.img,
-  ];
+  const q = `update posts set title=? ,description=? , cat_id=? where id=${req.params.id}`;
+  const values = [req.body.title, req.body.description, req.body.cat_id];
   db.query(q, values, (err, data) => {
     if (err) {
       res.json(err);
@@ -206,9 +198,8 @@ app.put("/update-post/:id", (req, res) => {
 app.get("/search/:key", (req, res) => {
   const searchTerm = req.params.key;
   const query = `
-        SELECT *
-        FROM posts
-        WHERE title LIKE '%${searchTerm}%' OR cat LIKE '%${searchTerm}%'
+  select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id
+        WHERE p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%'
     `;
 
   db.query(query, (err, data) => {

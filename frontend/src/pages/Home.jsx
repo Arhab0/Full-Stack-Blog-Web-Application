@@ -22,6 +22,7 @@ const Home = () => {
     try {
       const res = await axios.get(`${baseUrl}/posts${cat}`);
       if (res.data.length === 0) {
+        console.log(res.data);
         setError("No post available");
       } else {
         setError("");
@@ -63,10 +64,6 @@ const Home = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
-  //  const handleView = (id) =>{
-  //  todo
-  //  }
 
   return (
     <div className="px-6 py-32">
@@ -124,7 +121,6 @@ const Home = () => {
                 </Link>
               </div>
             </div>
-            {/* <div className={`${post.id % 2 == 0 ? 'md:right-0 right-2':"md:left-0 left-2"} flex absolute md:top-0 sm:top-[510px] top-[563px] items-center gap-2 mb-2`}><MdOutlineRemoveRedEye/> {post.views} views</div> */}
           </div>
         ))}
 
