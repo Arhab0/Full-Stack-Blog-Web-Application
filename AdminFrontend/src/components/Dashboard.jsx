@@ -7,7 +7,7 @@ import { clearUser } from "../store/authSlice";
 const Dashboard = () => {
   return (
     <div className="flex">
-      <div>
+      <div className="fixed">
         <Sidebar />
       </div>
     </div>

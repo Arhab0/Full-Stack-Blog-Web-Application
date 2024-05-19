@@ -223,7 +223,7 @@ app.get("/search/:key", (req, res) => {
   const searchTerm = req.params.key;
   const query = `
   select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id
-        WHERE p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%'
+        WHERE (p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%') and p.isActive = 1
     `;
 
   db.query(query, (err, data) => {
@@ -238,21 +238,9 @@ app.get("/search/:key", (req, res) => {
 
 // ========================  admin api
 
-// getting all post
-app.get("/AdminGetAllPost", (req, res) => {
-  const q =
-    "SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id";
-  db.query(q, (err, data) => {
-    if (err) {
-      res.send(err);
-    }
-    res.json(data);
-  });
-});
-
 // getting post by category
 app.get("/AdminGetArtPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'art' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'art' `;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -262,7 +250,7 @@ app.get("/AdminGetArtPost", (req, res) => {
 });
 
 app.get("/AdminGetSciencePost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'science' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'science' `;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -272,7 +260,7 @@ app.get("/AdminGetSciencePost", (req, res) => {
 });
 
 app.get("/AdminGetTechnologyPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'technology' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'technology' `;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -282,7 +270,7 @@ app.get("/AdminGetTechnologyPost", (req, res) => {
 });
 
 app.get("/AdminGetCinemaPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'cinema' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'cinema' `;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -292,7 +280,7 @@ app.get("/AdminGetCinemaPost", (req, res) => {
 });
 
 app.get("/AdminGetDesignPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'design' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'design' `;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -302,7 +290,7 @@ app.get("/AdminGetDesignPost", (req, res) => {
 });
 
 app.get("/AdminGetFoodPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'food' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'food' `;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -341,30 +329,47 @@ app.put("/ReActivatePost/:id", (req, res) => {
 app.put("/DeActivateUser/:id", (req, res) => {
   const userId = req.params.id;
   const q = `update users set isActive = 0 where id =${userId}`;
+  const q2 = `update posts set isActive = 0 where user_id =${userId}`;
   db.query(q, (err, data) => {
     if (err) {
       console.log(err);
-    } else {
-      res.json({ message: "User has been deActivated" });
     }
+    db.query(q2, (err, data) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json({
+        message:
+          "User and all the post related to this user has been deactivated",
+      });
+    });
   });
 });
 
 app.put("/ReActivateUser/:id", (req, res) => {
   const userId = req.params.id;
   const q = `update users set isActive = 1 where id =${userId}`;
+  const q2 = `update posts set isActive = 1 where user_id =${userId}`;
   db.query(q, (err, data) => {
     if (err) {
       console.log(err);
-    } else {
-      res.json({ message: "User has been Activated" });
     }
+    db.query(q2, (err, data) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json({
+        message:
+          "User and all the post related to this user has been Activated",
+      });
+    });
   });
 });
 
 // ===== getting users
 app.get("/GetAllUsers", (req, res) => {
-  const q = "select id,username,email,isActive from users where role_id = 2";
+  const q =
+    "select id,username,img,email,isActive from users where role_id = 2";
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
