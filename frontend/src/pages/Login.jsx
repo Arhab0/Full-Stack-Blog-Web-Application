@@ -34,13 +34,16 @@ const Login = () => {
         password,
       })
       .then((res) => {
-        if (res.data.message === "No user found") {
-          setError(res.data.message);
-        } else if (res.data.message === "Wrong username or password") {
+        const ObjLen = Object.keys(res.data).length;
+        if (ObjLen === 1) {
           setError(res.data.message);
         } else {
-          dispatch(loginUser(res.data));
-          navigate("/");
+          if (Object.keys(res.data).length == 1) {
+            setError(res.data.message);
+          } else {
+            dispatch(loginUser(res.data));
+            navigate("/");
+          }
         }
       });
   };

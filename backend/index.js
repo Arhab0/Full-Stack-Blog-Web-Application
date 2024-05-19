@@ -11,7 +11,7 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true,
   })
@@ -52,7 +52,8 @@ app.post("/register", (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
 
-    const Q = "insert into users (username,email,password) values(?,?,?)";
+    const Q =
+      "insert into users (username,email,password,role_id,isActive) values(?,?,?,2,1)";
     db.query(Q, [req.body.username, req.body.email, hash], (err, response) => {
       if (err) return res.json(err);
       return res.json({ message: "User has been created" });
@@ -74,13 +75,36 @@ app.post("/login", (req, res) => {
       if (!isPasswordCorrect) {
         res.json({ message: "Wrong username or password" });
       } else {
-        const { password, ...other } = data[0];
+        const { password, email, ...other } = data[0];
         const token = jwt.sign({ id: data[0].id }, secret, { expiresIn: "1d" });
 
         res.cookie("token", token).json(other);
       }
     } else {
       res.send({ message: "No user found" });
+    }
+  });
+});
+app.post("/Adminlogin", (req, res) => {
+  const q = "select * from users where username = ? and role_id = 1";
+  db.query(q, [req.body.username], (err, data) => {
+    if (err) {
+      console.log(err);
+    } else if (data.length > 0) {
+      const isPasswordCorrect = bcrypt.compareSync(
+        req.body.password,
+        data[0].password
+      );
+      if (!isPasswordCorrect) {
+        res.json({ message: "Wrong Admin username or password" });
+      } else {
+        const { password, ...other } = data[0];
+        const token = jwt.sign({ id: data[0].id }, secret, { expiresIn: "1d" });
+
+        res.cookie("token", token).json(other);
+      }
+    } else {
+      res.send({ message: "No Admin found with this username" });
     }
   });
 });
@@ -100,8 +124,8 @@ app.post("/logout", (req, res) => {
 // all post api
 app.get("/posts", (req, res) => {
   const q = req.query.cat
-    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id where c.cat = ?"
-    : "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id";
+    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where c.cat = ? and u.isActive =1"
+    : "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where u.isActive = 1";
   db.query(q, [req.query.cat], (err, data) => {
     if (err) {
       res.json(err);
@@ -212,6 +236,144 @@ app.get("/search/:key", (req, res) => {
   });
 });
 
+// ========================  admin api
+
+// getting all post
+app.get("/AdminGetAllPost", (req, res) => {
+  const q =
+    "SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+// getting post by category
+app.get("/AdminGetArtPost", (req, res) => {
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'art' `;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+app.get("/AdminGetSciencePost", (req, res) => {
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'science' `;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+app.get("/AdminGetTechnologyPost", (req, res) => {
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'technology' `;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+app.get("/AdminGetCinemaPost", (req, res) => {
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'cinema' `;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+app.get("/AdminGetDesignPost", (req, res) => {
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'design' `;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+app.get("/AdminGetFoodPost", (req, res) => {
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title, p.description, p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'food' `;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(data);
+  });
+});
+
+// deactivating and reactivating post
+app.put("/DeActivatePost/:id", (req, res) => {
+  const postId = req.params.id;
+  const q = `update posts set isActive = 0 where id =${postId}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({ message: "Post has been deActivated" });
+    }
+  });
+});
+
+app.put("/ReActivatePost/:id", (req, res) => {
+  const postId = req.params.id;
+  const q = `update posts set isActive = 1 where id =${postId}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({ message: "Post has been Activated" });
+    }
+  });
+});
+
+// deactivating and reactivating user
+
+app.put("/DeActivateUser/:id", (req, res) => {
+  const userId = req.params.id;
+  const q = `update users set isActive = 0 where id =${userId}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({ message: "User has been deActivated" });
+    }
+  });
+});
+
+app.put("/ReActivateUser/:id", (req, res) => {
+  const userId = req.params.id;
+  const q = `update users set isActive = 1 where id =${userId}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json({ message: "User has been Activated" });
+    }
+  });
+});
+
+// ===== getting users
+app.get("/GetAllUsers", (req, res) => {
+  const q = "select id,username,email,isActive from users where role_id = 2";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data);
+  });
+});
+
+// =========  port
 app.listen(3000, (err, res) => {
   if (err) {
     console.log(err);
