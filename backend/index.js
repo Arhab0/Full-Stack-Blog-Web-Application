@@ -96,7 +96,7 @@ app.post("/register", (req, res) => {
 
 // login api
 app.post("/login", (req, res) => {
-  const q = "select * from users where username = ?";
+  const q = "select * from users where username = ? and isActive = 1";
   db.query(q, [req.body.username], (err, data) => {
     if (err) {
       console.log(err);
