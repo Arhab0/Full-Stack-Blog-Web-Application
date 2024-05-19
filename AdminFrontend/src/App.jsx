@@ -11,6 +11,7 @@ import TechnologyPosts from "./components/Posts/TechnoloyPosts";
 import SciencePosts from "./components/Posts/SciencePosts";
 import DesignPosts from "./components/Posts/DesignPosts";
 import CinemaPosts from "./components/Posts/CinemaPosts";
+import SinglePost from "./components/SinglePost";
 
 function App() {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -28,6 +29,7 @@ function App() {
           <Route path="/cinemapost" element={<CinemaPosts />} />
           <Route path="/designpost" element={<DesignPosts />} />
           <Route path="/user" element={<Users />} />
+          <Route path="/post/:id" element={<SinglePost />} />
         </Routes>
       </BrowserRouter>
     </div>

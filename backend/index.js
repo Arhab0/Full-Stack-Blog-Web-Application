@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 app.use(cookieParser());
@@ -21,25 +22,57 @@ app.use(express.static("public"));
 
 const secret = "anything_secret";
 
-// uploading picture to server
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../frontend/public/upload");
+    cb(null, path.join(__dirname, "../frontend/public/upload"));
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "_" + Date.now() + path.extname(file.originalname)
-    );
+    const uniqueName =
+      file.fieldname + "_" + Date.now() + path.extname(file.originalname);
+    req.uploadedFileName = uniqueName; // Save the filename to the request object
+    cb(null, uniqueName);
   },
 });
 
 const upload = multer({ storage });
 
-app.post("/upload", upload.single("image"), function (req, res) {
-  res.json(req.file);
-});
+const copyFileToSecondLocation = (req, res, next) => {
+  const srcPath = path.join(
+    __dirname,
+    "../frontend/public/upload",
+    req.uploadedFileName
+  );
+  const destPath =
+    "C:/Users/hp/OneDrive/Desktop/blog_web/AdminFrontend/public/upload/" +
+    req.uploadedFileName;
 
+  // Ensure the destination directory exists
+  fs.mkdir(path.dirname(destPath), { recursive: true }, (err) => {
+    if (err) {
+      console.error("Error creating directory:", err);
+      return res.status(500).json({ error: "Error creating directory" });
+    }
+
+    // Copy the file
+    fs.copyFile(srcPath, destPath, (err) => {
+      if (err) {
+        console.error("Error copying file:", err);
+        return res.status(500).json({ error: "Error copying file" });
+      }
+      console.log(`File copied to ${destPath}`);
+      next();
+    });
+  });
+};
+
+app.post(
+  "/upload",
+  upload.single("image"),
+  copyFileToSecondLocation,
+  (req, res) => {
+    res.json(req.file);
+  }
+);
 //  ============================   auth api's  ======================
 
 // register api
@@ -85,6 +118,7 @@ app.post("/login", (req, res) => {
     }
   });
 });
+
 app.post("/Adminlogin", (req, res) => {
   const q = "select * from users where username = ? and role_id = 1";
   db.query(q, [req.body.username], (err, data) => {
@@ -124,8 +158,8 @@ app.post("/logout", (req, res) => {
 // all post api
 app.get("/posts", (req, res) => {
   const q = req.query.cat
-    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where c.cat = ? and u.isActive =1"
-    : "select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where u.isActive = 1";
+    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where c.cat = ? and u.isActive =1 and p.isActive = 1"
+    : "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where u.isActive = 1 and p.isActive = 1";
   db.query(q, [req.query.cat], (err, data) => {
     if (err) {
       res.json(err);
@@ -138,7 +172,7 @@ app.get("/posts", (req, res) => {
 // single post api
 app.get("/post/:id", (req, res) => {
   const q =
-    "select p.id,username,title,description,c.cat,date,p.img as postImg,u.img as userImg from users as u join posts as p on u.id = p.user_id join category as c on p.cat_id = c.id where p.id = ?";
+    "select p.id,username,title,description,c.cat,date,p.img as postImg,p.isActive,u.img as userImg from users as u join posts as p on u.id = p.user_id join category as c on p.cat_id = c.id where p.id = ?";
   db.query(q, [req.params.id], (err, data) => {
     if (err) {
       res.json(err);
@@ -185,7 +219,7 @@ app.post("/add-post", (req, res) => {
       return res.status(403).json({ message: "token is not valid" });
     } else {
       const q =
-        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`) values(?)";
+        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`) values(?,1)";
       const values = [
         req.body.title,
         req.body.description,
@@ -368,8 +402,10 @@ app.put("/ReActivateUser/:id", (req, res) => {
 
 // ===== getting users
 app.get("/GetAllUsers", (req, res) => {
+  // const q =
+  //   "select u.id,u.img,u.username,u.email,u.isActive,count(p.id) as total_post from users as u join posts as p on u.id = p.user_id join category as c on c.id = p.user_id where u.role_id = 2 group by u.id,p.user_id";
   const q =
-    "select id,username,img,email,isActive from users where role_id = 2";
+    "select u.id,u.img,u.username,u.email,u.isActive,count(p.id) as total_post from users as u left join posts as p on u.id = p.user_id left join category as c on c.id = p.user_id where u.role_id = 2 group by u.id,p.user_id";
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);

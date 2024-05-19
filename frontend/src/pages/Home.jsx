@@ -12,8 +12,6 @@ const Home = () => {
   const postsPerPage = 10;
   const cat = useLocation().search;
 
-  // localStorage.clear();
-
   useEffect(() => {
     fetchData();
   }, [cat, error]);

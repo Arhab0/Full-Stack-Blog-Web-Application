@@ -3,6 +3,7 @@ import axios from "axios";
 import { baseUrl } from "../../helper/baseUrl";
 import { useStateContext } from "../../context/ContextProvider";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const TechnologyPosts = () => {
   const [posts, setPosts] = useState([]);
@@ -80,18 +81,22 @@ const TechnologyPosts = () => {
                   {post.post_id}
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
-                  {post.post_img}
+                  <img
+                    className="w-[100px] h-[60px] rounded-md"
+                    src={`../upload/${post.post_img}`}
+                    alt="Post img"
+                  />
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
                   {post.username}
                 </td>
-                <td className="px-6 py-4 border border-gray-300">
+                <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {post.title.substring(0, 20)}...
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
                   {post.category}
                 </td>
-                <td className="px-6 py-4 border border-gray-300">
+                <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {moment(post.date).fromNow()}
                 </td>
                 <td className="px-6 py-4 border cursor-pointer border-gray-300">
@@ -106,7 +111,9 @@ const TechnologyPosts = () => {
                   )}
                 </td>
                 <td className="px-6 py-4 border border-gray-300 cursor-pointer">
-                  view
+                  <Link to={`/post/${post.post_id}`}>
+                    <p>View</p>
+                  </Link>
                 </td>
               </tr>
             ))}

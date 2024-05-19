@@ -8,7 +8,7 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(7);
+  const [usersPerPage] = useState(5);
   const { activeMenu } = useStateContext();
 
   useEffect(() => {
@@ -39,6 +39,20 @@ const Users = () => {
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleDeActivate = (userId) => {
+    axios.put(`${baseUrl}/DeActivateUser/${userId}`).then((res) => {
+      alert(res.data.message);
+      window.location.reload();
+    });
+  };
+
+  const handleReActivate = (userId) => {
+    axios.put(`${baseUrl}/ReActivateUser/${userId}`).then((res) => {
+      alert(res.data.message);
+      window.location.reload();
+    });
+  };
+
   return (
     <div
       className={`${
@@ -63,9 +77,14 @@ const Users = () => {
                 email
               </th>
               <th scope="col" className="px-6 py-3 border border-gray-300">
+                Total post
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
                 IsActive
               </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300"></th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                Active / DeActive
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -81,6 +100,9 @@ const Users = () => {
                 <td className="px-6 py-4 border border-gray-300">
                   {post.email}
                 </td>
+                <td className="px-6 py-4 border border-gray-300">
+                  {post.total_post}
+                </td>
                 <td className="px-6 py-4 border cursor-pointer border-gray-300">
                   {post.isActive?.data?.[0] === 1 ? (
                     <p className="bg-green-400 text-center rounded-lg px-5 py-2">
@@ -92,8 +114,26 @@ const Users = () => {
                     </p>
                   )}
                 </td>
-                <td className="px-6 py-4 border border-gray-300 cursor-pointer">
-                  view
+                <td className="px-6 py-4 border cursor-pointer underline border-gray-300">
+                  {post.isActive?.data?.[0] === 1 ? (
+                    <p
+                      className="text-center px-5 py-2"
+                      onClick={() => {
+                        handleDeActivate(post.id);
+                      }}
+                    >
+                      DeActivate
+                    </p>
+                  ) : (
+                    <p
+                      className="text-center px-5 py-2"
+                      onClick={() => {
+                        handleReActivate(post.id);
+                      }}
+                    >
+                      ReActivate
+                    </p>
+                  )}
                 </td>
               </tr>
             ))}

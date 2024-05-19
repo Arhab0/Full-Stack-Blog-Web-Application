@@ -51,7 +51,7 @@ const Login = () => {
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto">
+      <div className="sm:ml-[100px]">
         <section className="h-screen">
           <div className="h-full">
             {/* <!-- Left column container with background--> */}

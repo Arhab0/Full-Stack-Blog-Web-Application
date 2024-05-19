@@ -3,7 +3,7 @@ import axios from "axios";
 import { baseUrl } from "../../helper/baseUrl";
 import { useStateContext } from "../../context/ContextProvider";
 import moment from "moment";
-import img from "../../../../frontend/public/upload/image_1712174891933.jpeg";
+import { Link } from "react-router-dom";
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
@@ -30,8 +30,6 @@ const AllPosts = () => {
       console.log(err);
     }
   };
-  // console.log(posts);
-  console.log(img);
 
   // Get current posts
   const indexOfLastPost = currentPage * postsPerPage;
@@ -41,6 +39,8 @@ const AllPosts = () => {
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // console.log(posts);
+  // console.log(posts.post_img);
   return (
     <div
       className={`${
@@ -49,7 +49,7 @@ const AllPosts = () => {
     >
       <h1 className="font-bold md:text-4xl sm:text-xl">Art</h1>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
-        <table className="w-full text-sm text-left rtl:text-right text-black border-collapse border border-gray-300">
+        {/* <table className="w-full text-sm text-left rtl:text-right text-black border-collapse border border-gray-300">
           <thead className="text-xs font-bold uppercase bg-gray-50 text-black">
             <tr>
               <th scope="col" className="px-6 py-3 border border-gray-300">
@@ -84,21 +84,21 @@ const AllPosts = () => {
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
                   <img
-                    className="w-[20px] h-[20px]"
-                    src={`../../../../frontend/public/upload/${post.post_img}`}
+                    className="w-[80px] h-[60px] rounded-md"
+                    src={`../upload/${post.post_img}`}
                     alt="Post img"
                   />
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
                   {post.username}
                 </td>
-                <td className="px-6 py-4 border border-gray-300">
+                <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {post.title.substring(0, 20)}...
                 </td>
                 <td className="px-6 py-4 border text-center border-gray-300">
                   {post.category}
                 </td>
-                <td className="px-6 py-4 border border-gray-300">
+                <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {moment(post.date).fromNow()}
                 </td>
                 <td className="px-6 py-4 border cursor-pointer border-gray-300">
@@ -113,13 +113,90 @@ const AllPosts = () => {
                   )}
                 </td>
                 <td className="px-6 py-4 border border-gray-300 cursor-pointer">
-                  view
+                  <Link to={`/post/${post.post_id}`}>
+                    <p>View</p>
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table> */}
+        <table className="w-full text-sm text-left rtl:text-right text-black border-collapse border border-gray-300">
+          <thead className="text-xs font-bold uppercase bg-gray-50 text-black">
+            <tr>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                Id
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                Img
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                Author
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                Title
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                Category
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                Date
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300">
+                IsActive
+              </th>
+              <th scope="col" className="px-6 py-3 border border-gray-300"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentPosts.map((post) => (
+              <tr key={post.post_id} className="border border-gray-300">
+                <td className="px-6 py-4 border border-gray-300">
+                  {post.post_id}
+                </td>
+                <td className="px-6 py-4 border border-gray-300">
+                  <div className="w-[80px] h-[60px]">
+                    <img
+                      className="w-full h-[60px] rounded-md"
+                      src={`../upload/${post.post_img}`}
+                      alt="Post img"
+                    />
+                  </div>
+                </td>
+                <td className="px-6 py-4 border border-gray-300">
+                  {post.username}
+                </td>
+                <td className="px-6 py-4 border text-nowrap border-gray-300">
+                  {post.title.substring(0, 20)}...
+                </td>
+                <td className="px-6 py-4 border text-center border-gray-300">
+                  {post.category}
+                </td>
+                <td className="px-6 py-4 border text-nowrap border-gray-300">
+                  {moment(post.date).fromNow()}
+                </td>
+                <td className="px-6 py-4 border cursor-pointer border-gray-300">
+                  {post.PostIsActive?.data?.[0] === 1 ? (
+                    <p className="bg-green-400 text-center rounded-lg px-5 py-2">
+                      Active
+                    </p>
+                  ) : (
+                    <p className="bg-red-500 text-center rounded-lg px-5 py-2">
+                      Disabled
+                    </p>
+                  )}
+                </td>
+                <td className="px-6 py-4 border border-gray-300 cursor-pointer">
+                  <Link to={`/post/${post.post_id}`}>
+                    <p>View</p>
+                  </Link>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div className="flex justify-center gap-6 items-center my-5">
+
+        <div className="flex flex-wrap justify-center gap-6 items-center my-5">
           showing {currentPosts.length} posts out of {posts.length}
           <ul className="flex space-x-2">
             {Array.from({
