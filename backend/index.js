@@ -42,8 +42,9 @@ const copyFileToSecondLocation = (req, res, next) => {
     "../frontend/public/upload",
     req.uploadedFileName
   );
+  //C:/Users/hp/OneDrive/Desktop/blog_web/AdminFrontend/public/upload/
   const destPath =
-    "C:/Users/hp/OneDrive/Desktop/blog_web/AdminFrontend/public/upload/" +
+    "C:/Projects/React_Projects/AdminFrontend/public/upload/" +
     req.uploadedFileName;
 
   // Ensure the destination directory exists
@@ -57,9 +58,9 @@ const copyFileToSecondLocation = (req, res, next) => {
     fs.copyFile(srcPath, destPath, (err) => {
       if (err) {
         console.error("Error copying file:", err);
+        console.log(err);
         return res.status(500).json({ error: "Error copying file" });
       }
-      console.log(`File copied to ${destPath}`);
       next();
     });
   });
@@ -86,11 +87,15 @@ app.post("/register", (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, salt);
 
     const Q =
-      "insert into users (username,email,password,role_id,isActive) values(?,?,?,2,1)";
-    db.query(Q, [req.body.username, req.body.email, hash], (err, response) => {
-      if (err) return res.json(err);
-      return res.json({ message: "User has been created" });
-    });
+      "insert into users (username,email,password,gender,role_id,isActive) values(?,?,?,?,2,1)";
+    db.query(
+      Q,
+      [req.body.username, req.body.email, hash, req.body.gender],
+      (err, response) => {
+        if (err) return res.json(err);
+        return res.json({ message: "User has been created" });
+      }
+    );
   });
 });
 
@@ -172,7 +177,7 @@ app.get("/posts", (req, res) => {
 // single post api
 app.get("/post/:id", (req, res) => {
   const q =
-    "select p.id,username,title,description,c.cat,date,p.img as postImg,p.isActive,u.img as userImg from users as u join posts as p on u.id = p.user_id join category as c on p.cat_id = c.id where p.id = ?";
+    "select p.id,username,title,description,c.cat,p.cat_id,date,p.img as postImg,p.isActive,u.img as userImg from users as u join posts as p on u.id = p.user_id join category as c on p.cat_id = c.id where p.id = ?";
   db.query(q, [req.params.id], (err, data) => {
     if (err) {
       res.json(err);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
@@ -55,6 +55,7 @@ const UpdatePost = () => {
     setTitle(res.data.title);
     setValues(res.data.description);
     setCat(res.data.cat);
+    setCatId(res.data.cat_id);
   };
   return (
     <div className="px-6 py-32">
