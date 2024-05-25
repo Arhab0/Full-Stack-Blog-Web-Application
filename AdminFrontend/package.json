@@ -25,6 +25,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
     "simplebar-react": "^2.4.1",
+    "sweetalert2": "^11.11.0",
     "tw-elements-react": "^1.0.0-alpha2"
   },
   "devDependencies": {

@@ -155,6 +155,7 @@ import { baseUrl } from "../helper/baseUrl";
 
 import { useStateContext } from "../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const SinglePost = () => {
   const [post, setPost] = useState({});
@@ -177,14 +178,26 @@ const SinglePost = () => {
 
   const handleReActivate = () => {
     axios.put(`${baseUrl}/ReActivatePost/${postId}`).then((res) => {
-      alert(res.data.message);
+      var message = res.data.message;
+      Swal.fire({
+        title: "success!",
+        text: message,
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
       GoBack();
     });
   };
 
   const handleDeActivate = () => {
     axios.put(`${baseUrl}/DeActivatePost/${postId}`).then((res) => {
-      alert(res.data.message);
+      var message = res.data.message;
+      Swal.fire({
+        title: "success!",
+        text: message,
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
       GoBack();
     });
   };

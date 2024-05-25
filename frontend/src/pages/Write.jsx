@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { baseUrl } from "../helper/baseUrl";
 import Modal from "../components/Modal";
+import Swal from "sweetalert2";
 
 const Write = () => {
   const [values, setValues] = useState("");
@@ -49,20 +50,35 @@ const Write = () => {
 
     const imgUrl = await upload();
     try {
-      await axios.post(`${baseUrl}/add-post`, {
-        title,
-        description: values,
-        img: file ? imgUrl : "",
-        cat,
-        cat_id: catId,
-        date: moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),
-      });
-      alert("New post has been created");
-      navigate("/");
+      await axios
+        .post(`${baseUrl}/add-post`, {
+          title,
+          description: values,
+          img: file ? imgUrl : "",
+          cat,
+          cat_id: catId,
+          date: moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),
+        })
+        .then((res) => {
+          var message = res.data.message;
+          Swal.fire({
+            title: "success!",
+            text: message,
+            icon: "success",
+          });
+        });
+      setTimeout(() => {
+        navigate("/");
+      }, 5000);
     } catch (err) {
       console.log(err);
       if (err.message === "Request failed with status code 401") {
-        alert("Please login first");
+        Swal.fire({
+          title: "Warning!",
+          text: "Please Login first",
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
         navigate("/login");
       }
     }

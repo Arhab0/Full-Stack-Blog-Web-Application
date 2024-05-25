@@ -101,7 +101,8 @@ app.post("/register", (req, res) => {
 
 // login api
 app.post("/login", (req, res) => {
-  const q = "select * from users where username = ? and isActive = 1";
+  const q =
+    "select * from users where username = ? and isActive = 1 and role_id = 2";
   db.query(q, [req.body.username], (err, data) => {
     if (err) {
       console.log(err);
@@ -163,8 +164,8 @@ app.post("/logout", (req, res) => {
 // all post api
 app.get("/posts", (req, res) => {
   const q = req.query.cat
-    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where c.cat = ? and u.isActive =1 and p.isActive = 1"
-    : "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where u.isActive = 1 and p.isActive = 1";
+    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where c.cat = ? and u.isActive =1 and p.isActive = 1 p.isPending = 0"
+    : "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where u.isActive = 1 and p.isActive = 1 and p.isPending = 0";
   db.query(q, [req.query.cat], (err, data) => {
     if (err) {
       res.json(err);
@@ -224,7 +225,7 @@ app.post("/add-post", (req, res) => {
       return res.status(403).json({ message: "token is not valid" });
     } else {
       const q =
-        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`) values(?,1)";
+        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`,`isPending`) values(?,1,1)";
       const values = [
         req.body.title,
         req.body.description,
@@ -237,7 +238,10 @@ app.post("/add-post", (req, res) => {
         if (err) {
           res.json(err);
         } else {
-          res.json({ message: "post has been created" });
+          res.json({
+            message:
+              "Your post is in the pending stage. Once the admin approves your post, it will be on the website.",
+          });
         }
       });
     }
@@ -262,7 +266,7 @@ app.get("/search/:key", (req, res) => {
   const searchTerm = req.params.key;
   const query = `
   select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id
-        WHERE (p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%') and p.isActive = 1
+        WHERE (p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%') and p.isActive = 1 and p.isPending = 0
     `;
 
   db.query(query, (err, data) => {
@@ -379,7 +383,7 @@ app.put("/DeActivateUser/:id", (req, res) => {
       }
       res.json({
         message:
-          "User and all the post related to this user has been deactivated",
+          "User and all the posts related to this user has been deactivated",
       });
     });
   });
@@ -399,7 +403,7 @@ app.put("/ReActivateUser/:id", (req, res) => {
       }
       res.json({
         message:
-          "User and all the post related to this user has been Activated",
+          "User and all the posts related to this user has been Activated",
       });
     });
   });

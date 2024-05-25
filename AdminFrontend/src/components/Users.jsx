@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../helper/baseUrl";
 import { useStateContext } from "../context/ContextProvider";
-import moment from "moment";
+import Swal from "sweetalert2";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -20,7 +20,7 @@ const Users = () => {
       const res = await axios.get(`${baseUrl}/GetAllUsers`);
       if (res.data.length === 0) {
         console.log(res.data);
-        setError("No post available");
+        setError("No user available");
       } else {
         setError("");
       }
@@ -41,15 +41,29 @@ const Users = () => {
 
   const handleDeActivate = (userId) => {
     axios.put(`${baseUrl}/DeActivateUser/${userId}`).then((res) => {
-      alert(res.data.message);
-      window.location.reload();
+      var message = res.data.message;
+      Swal.fire({
+        title: "success!",
+        text: message,
+        icon: "success",
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 6000);
     });
   };
 
   const handleReActivate = (userId) => {
     axios.put(`${baseUrl}/ReActivateUser/${userId}`).then((res) => {
-      alert(res.data.message);
-      window.location.reload();
+      var message = res.data.message;
+      Swal.fire({
+        title: "success!",
+        text: message,
+        icon: "success",
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 6000);
     });
   };
 
@@ -131,7 +145,7 @@ const Users = () => {
                         handleReActivate(post.id);
                       }}
                     >
-                      ReActivate
+                      Activate
                     </p>
                   )}
                 </td>

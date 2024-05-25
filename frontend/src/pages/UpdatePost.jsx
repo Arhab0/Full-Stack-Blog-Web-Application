@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../helper/baseUrl";
+import Swal from "sweetalert2";
 
 const UpdatePost = () => {
   const [values, setValues] = useState("");
@@ -33,12 +34,21 @@ const UpdatePost = () => {
     e.preventDefault();
 
     try {
-      await axios.put(`${baseUrl}/update-post/${postId}`, {
-        title,
-        description: values,
-        cat_id: catId,
-      });
-      alert("Post has been updated");
+      await axios
+        .put(`${baseUrl}/update-post/${postId}`, {
+          title,
+          description: values,
+          cat_id: catId,
+        })
+        .then((res) => {
+          var message = res.data.message;
+          Swal.fire({
+            title: "success!",
+            text: message,
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
+        });
       navigate("/");
     } catch (err) {
       console.log(err);

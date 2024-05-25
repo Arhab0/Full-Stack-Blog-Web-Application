@@ -11,6 +11,7 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { baseUrl } from "../helper/baseUrl";
 
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 const SinglePost = () => {
   const [post, setPost] = useState({});
@@ -35,16 +36,40 @@ const SinglePost = () => {
     try {
       await axios.delete(`${baseUrl}/deletePost/${params.id}`).then((res) => {
         if (res.data.message === "Not authenticated") {
-          alert(res.data.message);
+          var message = res.data.message;
+          Swal.fire({
+            title: "success!",
+            text: message,
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
         } else if (res.data.message === "Invalid token") {
-          alert(res.data.message);
+          var message1 = res.data.message;
+          Swal.fire({
+            title: "success!",
+            text: message1,
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
         } else if (
           res.data.message ===
           "This post doesn't belong to you or does not exist"
         ) {
-          alert(res.data.message);
+          var message2 = res.data.message;
+          Swal.fire({
+            title: "success!",
+            text: message2,
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
         } else {
-          alert(res.data.message);
+          var message3 = res.data.message;
+          Swal.fire({
+            title: "success!",
+            text: message3,
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
           navigate("/");
         }
       });

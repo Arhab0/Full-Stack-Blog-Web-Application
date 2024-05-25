@@ -6,6 +6,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../store/authSlice";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,13 @@ const Navbar = () => {
   const handleLogout = async () => {
     await axios.post("http://localhost:3000/logout").then((res) => {
       dispatch(clearUser());
-      alert(res.data.message);
+      var message = res.data.message;
+      Swal.fire({
+        title: "success!",
+        text: message,
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
     });
   };
 

@@ -8,6 +8,7 @@ import { baseUrl } from "../helper/baseUrl";
 import { Link } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import AdminPic from "../assets/Admin-Profile-Vector-PNG-Clipart.png";
+import Swal from "sweetalert2";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -29,7 +30,14 @@ const Sidebar = () => {
   const handleLogout = async () => {
     await axios.post(`${baseUrl}/logout`).then((res) => {
       dispatch(clearUser());
-      alert(res.data.message);
+      // alert(res.data.message);
+      var message = res.data.message;
+      Swal.fire({
+        title: "success!",
+        text: message,
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
     });
   };
   return (
