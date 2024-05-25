@@ -34,11 +34,20 @@ const Sidebar = () => {
     await axios.post(`${baseUrl}/logout`).then((res) => {
       dispatch(clearUser());
       var message = res.data.message;
-      Swal.fire({
-        title: "success!",
-        text: message,
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
         icon: "success",
-        confirmButtonText: "Ok",
+        title: message,
       });
       navigate("/login");
     });

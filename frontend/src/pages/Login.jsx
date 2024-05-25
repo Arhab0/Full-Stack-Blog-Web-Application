@@ -64,32 +64,28 @@ const Login = () => {
       });
   };
   return (
-    <div className="flex items-center justify-center flex-col h-screen bg-[#b9e7e7]">
-      <h1 className="text-4xl font-bold text-teal-700 mb-11">Login</h1>
-      <form className="flex flex-col gap-5 bg-white p-6 w-[400px] rounded">
+    <div className="flex items-center justify-center flex-col h-screen bg-gray-200 p-9 overflow-hidden">
+      <h1 className="text-3xl font-bold text-teal-700 mb-8">Login</h1>
+      <form className="flex flex-col gap-5 bg-white p-6 w-full max-w-md rounded-lg shadow-md">
         <input
           type="text"
           name="username"
           placeholder="Enter your name"
-          className=" border-b border-1 border-zinc-600 p-4 placeholder:text-gray-500 outline-none"
+          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
           value={username}
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <input
           type="password"
           name="password"
           placeholder="Enter your password"
-          className=" border-b border-1 border-zinc-600 p-4 placeholder:text-gray-500 outline-none"
+          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
           value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          onChange={(e) => setPassword(e.target.value)}
         />
-        <p className="text-red-700 font-semibold text-center">
-          {error == "" ? "" : error}
-        </p>
+        {error && (
+          <p className="text-red-700 font-semibold text-center">{error}</p>
+        )}
         <button
           onClick={handleSubmit}
           className="bg-teal-700 text-white p-3 border-none

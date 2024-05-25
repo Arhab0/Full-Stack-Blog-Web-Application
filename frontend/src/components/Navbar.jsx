@@ -7,20 +7,33 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../store/authSlice";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
     await axios.post("http://localhost:3000/logout").then((res) => {
       dispatch(clearUser());
       var message = res.data.message;
-      Swal.fire({
-        title: "success!",
-        text: message,
-        icon: "success",
-        confirmButtonText: "Ok",
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
       });
+      Toast.fire({
+        icon: "success",
+        title: message,
+      });
+      navigate("/login");
     });
   };
 
