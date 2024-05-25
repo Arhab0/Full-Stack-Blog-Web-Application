@@ -82,6 +82,7 @@ const Login = () => {
         >
           Login
         </button>
+
         <span className="text-sm">
           Didn't have account?
           <Link className=" text-blue-800" to="/register">

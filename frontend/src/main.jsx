@@ -13,7 +13,6 @@ import Write from "./pages/Write.jsx";
 import SinglePost from "./pages/SinglePost.jsx";
 import Home from "./pages/Home.jsx";
 import UpdatePost from "./pages/UpdatePost.jsx";
-// import Profile from './components/Profile.jsx';
 
 const router = createBrowserRouter([
   {

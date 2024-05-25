@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import editLogo from "../img/edit.png";
 import deleteLogo from "../img/delete.png";
 import { Link } from "react-router-dom";
@@ -7,7 +7,6 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { FaUser } from "react-icons/fa";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { baseUrl } from "../helper/baseUrl";
 
 import { useSelector } from "react-redux";

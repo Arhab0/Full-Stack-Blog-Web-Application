@@ -1,6 +1,5 @@
 import axios from "axios";
-// eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa";
