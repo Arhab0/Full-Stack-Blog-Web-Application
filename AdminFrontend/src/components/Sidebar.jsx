@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { FaArrowDown } from "react-icons/fa";
 import { clearUser } from "../store/authSlice";
 import { baseUrl } from "../helper/baseUrl";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import AdminPic from "../assets/Admin-Profile-Vector-PNG-Clipart.png";
 import Swal from "sweetalert2";
@@ -13,11 +13,11 @@ import Swal from "sweetalert2";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [pendingPost, setPendingPost] = useState(0);
-  const [rejectedPost, setRejectedPost] = useState(0);
   const [isPostsOpen, setIsPostsOpen] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { setActiveMenu } = useStateContext();
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -32,7 +32,6 @@ const Sidebar = () => {
   const handleLogout = async () => {
     await axios.post(`${baseUrl}/logout`).then((res) => {
       dispatch(clearUser());
-      // alert(res.data.message);
       var message = res.data.message;
       Swal.fire({
         title: "success!",
@@ -40,6 +39,7 @@ const Sidebar = () => {
         icon: "success",
         confirmButtonText: "Ok",
       });
+      navigate("/login");
     });
   };
 
@@ -48,18 +48,13 @@ const Sidebar = () => {
       setPendingPost(res.data.PendingPost);
     });
   };
-  const GetRejectedPostCount = async () => {
-    await axios.get(`${baseUrl}/rejectedPostsCount`).then((res) => {
-      setRejectedPost(res.data.RejectedPost);
-    });
-  };
+
   useEffect(() => {
     GetPendingPostCount();
-    GetRejectedPostCount();
   }, [isOpen]);
 
   return (
-    <div className="flex h-screen hover:overflow-y-auto overflow-y-auto">
+    <div className="flex h-screen hover:overflow-y-auto overflow-y-auto fixed">
       <div
         className={`${
           isOpen ? "w-64" : "w-16"
@@ -84,7 +79,7 @@ const Sidebar = () => {
             <div className={`${isOpen ? "block" : "hidden"} absolute top-10`}>
               <div className="flex flex-col text-center">
                 <img src={AdminPic} className="w-[130px] h-[130px]" alt="" />
-                <h1 className="mt-3 font-bold text-lg">{user.username}</h1>
+                <h1 className="mt-3 font-bold text-lg">{user?.username}</h1>
               </div>
             </div>
           </div>

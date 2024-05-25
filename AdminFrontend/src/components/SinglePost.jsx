@@ -69,9 +69,7 @@ const SinglePost = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isMobile = screenSize < 768; // Tailwind's md breakpoint is 768px
-
-  // Don't show the SinglePost component if on mobile and activeMenu is true
+  const isMobile = screenSize < 768;
   if (isMobile && activeMenu) {
     return null;
   }
@@ -141,7 +139,7 @@ const SinglePost = () => {
               className="bg-green-400 text-center rounded-lg px-5 py-2"
               onClick={handleReActivate}
             >
-              ReActivate
+              Activate
             </p>
           )}
         </div>

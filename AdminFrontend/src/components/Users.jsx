@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../helper/baseUrl";
 import { useStateContext } from "../context/ContextProvider";
@@ -30,13 +30,10 @@ const Users = () => {
     }
   };
 
-  console.log(users);
-  // Get current posts
   const indexOfLastPost = currentPage * usersPerPage;
   const indexOfFirstPost = indexOfLastPost - usersPerPage;
   const currentUsers = users.slice(indexOfFirstPost, indexOfLastPost);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDeActivate = (userId) => {

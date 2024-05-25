@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../helper/baseUrl";
 import { useStateContext } from "../../context/ContextProvider";
@@ -9,7 +9,7 @@ const AllPosts = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(7); // You can adjust the number of posts per page
+  const [postsPerPage] = useState(7);
   const { activeMenu } = useStateContext();
 
   useEffect(() => {
@@ -31,16 +31,11 @@ const AllPosts = () => {
     }
   };
 
-  // Get current posts
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // console.log(posts);
-  // console.log(posts.post_img);
   return (
     <div
       className={`${

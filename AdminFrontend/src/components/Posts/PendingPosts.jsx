@@ -9,7 +9,7 @@ const PendingPosts = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(7); // You can adjust the number of posts per page
+  const [postsPerPage] = useState(7);
   const { activeMenu } = useStateContext();
 
   useEffect(() => {

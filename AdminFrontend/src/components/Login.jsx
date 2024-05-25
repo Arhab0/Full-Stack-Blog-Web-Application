@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TEInput, TERipple } from "tw-elements-react";
 import { loginUser } from "../../../frontend/src/store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,7 +50,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-7xl">
       <div className="sm:ml-[100px]">
         <section className="h-screen">
           <div className="h-full">
