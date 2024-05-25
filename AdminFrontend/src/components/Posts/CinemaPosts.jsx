@@ -31,11 +31,6 @@ const CinemaPosts = () => {
     }
   };
 
-  const getText = (html) => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent;
-  };
-
   // Get current posts
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -117,7 +112,7 @@ const CinemaPosts = () => {
                 </td>
                 <td className="px-6 py-4 border border-gray-300 cursor-pointer">
                   <Link to={`/post/${post.post_id}`}>
-                    <p>View</p>
+                    <p className="underline">View</p>
                   </Link>
                 </td>
               </tr>

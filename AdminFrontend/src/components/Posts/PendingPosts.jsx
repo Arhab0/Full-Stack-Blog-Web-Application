@@ -5,11 +5,11 @@ import { useStateContext } from "../../context/ContextProvider";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-const FoodPosts = () => {
+const PendingPosts = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(7);
+  const [postsPerPage] = useState(7); // You can adjust the number of posts per page
   const { activeMenu } = useStateContext();
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const FoodPosts = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${baseUrl}/AdminGetFoodPost`);
+      const res = await axios.get(`${baseUrl}/pendingPosts`);
       if (res.data.length === 0) {
         console.log(res.data);
         setError("No post available");
@@ -45,7 +45,7 @@ const FoodPosts = () => {
         activeMenu ? "pl-[280px]" : "pl-[100px]"
       } pt-8 overflow-y-auto`}
     >
-      <h1 className="font-bold md:text-4xl sm:text-xl">Food</h1>
+      <h1 className="font-bold md:text-4xl sm:text-xl">Posts</h1>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
         <table className="w-full text-sm text-left rtl:text-right text-black border-collapse border border-gray-300">
           <thead className="text-xs font-bold uppercase bg-gray-50 text-black">
@@ -69,7 +69,7 @@ const FoodPosts = () => {
                 Date
               </th>
               <th scope="col" className="px-6 py-3 border border-gray-300">
-                IsActive
+                Status
               </th>
               <th scope="col" className="px-6 py-3 border border-gray-300"></th>
             </tr>
@@ -81,11 +81,13 @@ const FoodPosts = () => {
                   {post.post_id}
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
-                  <img
-                    className="w-[80px] h-[60px] rounded-md"
-                    src={`../upload/${post.post_img}`}
-                    alt="Post img"
-                  />
+                  <div className="w-[80px] h-[60px]">
+                    <img
+                      className="w-full h-[60px] rounded-md"
+                      src={`../upload/${post.post_img}`}
+                      alt="Post img"
+                    />
+                  </div>
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
                   {post.username}
@@ -93,25 +95,25 @@ const FoodPosts = () => {
                 <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {post.title.substring(0, 20)}...
                 </td>
-                <td className="px-6 py-4 border border-gray-300">
+                <td className="px-6 py-4 border text-center border-gray-300">
                   {post.category}
                 </td>
                 <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {moment(post.date).fromNow()}
                 </td>
                 <td className="px-6 py-4 border cursor-pointer border-gray-300">
-                  {post.PostIsActive?.data?.[0] === 1 ? (
-                    <p className="bg-green-400 text-center rounded-lg px-5 py-2">
-                      Active
+                  {post.isRejected?.data?.[0] === 1 ? (
+                    <p className="px-5 py-3 rounded-md bg-red-500 font-capitalize font-semibold">
+                      Rejected
                     </p>
                   ) : (
-                    <p className="bg-red-500 text-center rounded-lg px-5 py-2">
-                      Disabled
+                    <p className="px-5 py-3 rounded-md bg-yellow-300 font-capitalize font-semibold">
+                      Pending
                     </p>
                   )}
                 </td>
                 <td className="px-6 py-4 border border-gray-300 cursor-pointer">
-                  <Link to={`/post/${post.post_id}`}>
+                  <Link to={`/approvepost/${post.post_id}`}>
                     <p className="underline">View</p>
                   </Link>
                 </td>
@@ -119,7 +121,8 @@ const FoodPosts = () => {
             ))}
           </tbody>
         </table>
-        <div className="flex justify-center gap-6 items-center my-5">
+
+        <div className="flex flex-wrap justify-center gap-6 items-center my-5">
           showing {currentPosts.length} posts out of {posts.length}
           <ul className="flex space-x-2">
             {Array.from({
@@ -146,4 +149,4 @@ const FoodPosts = () => {
   );
 };
 
-export default FoodPosts;
+export default PendingPosts;

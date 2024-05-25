@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
 import { FaUser } from "react-icons/fa";
-import { baseUrl } from "../helper/baseUrl";
+import { baseUrl } from "../../helper/baseUrl";
 
-import { useStateContext } from "../context/ContextProvider";
+import { useStateContext } from "../../context/ContextProvider";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const SinglePost = () => {
+const ApprovePost = () => {
   const [post, setPost] = useState({});
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const postId = location.pathname.split("/")[2];
@@ -27,8 +27,8 @@ const SinglePost = () => {
     fetchData();
   }, [postId]);
 
-  const handleReActivate = () => {
-    axios.put(`${baseUrl}/ReActivatePost/${postId}`).then((res) => {
+  const HandleApprovePost = () => {
+    axios.put(`${baseUrl}/approvePost/${postId}`).then((res) => {
       var message = res.data.message;
       Swal.fire({
         title: "success!",
@@ -36,12 +36,13 @@ const SinglePost = () => {
         icon: "success",
         confirmButtonText: "Ok",
       });
-      GoBack();
+      setTimeout(() => {
+        GoBack();
+      }, 4000);
     });
   };
-
-  const handleDeActivate = () => {
-    axios.put(`${baseUrl}/DeActivatePost/${postId}`).then((res) => {
+  const HandleRejectPost = () => {
+    axios.put(`${baseUrl}/rejectPost/${postId}`).then((res) => {
       var message = res.data.message;
       Swal.fire({
         title: "success!",
@@ -49,7 +50,9 @@ const SinglePost = () => {
         icon: "success",
         confirmButtonText: "Ok",
       });
-      GoBack();
+      setTimeout(() => {
+        GoBack();
+      }, 4000);
     });
   };
 
@@ -69,9 +72,7 @@ const SinglePost = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isMobile = screenSize < 768; // Tailwind's md breakpoint is 768px
-
-  // Don't show the SinglePost component if on mobile and activeMenu is true
+  const isMobile = screenSize < 768;
   if (isMobile && activeMenu) {
     return null;
   }
@@ -128,32 +129,43 @@ const SinglePost = () => {
       </div>
 
       <div className="flex items-center gap-3 justify-end pr-9 my-11">
-        <div className="cursor-pointer">
-          {post.isActive?.data?.[0] === 1 ? (
-            <p
-              className="bg-red-500 text-center rounded-lg px-5 py-2"
-              onClick={handleDeActivate}
+        {post.isRejected?.data?.[0] === 1 ? (
+          <>
+            <div
+              className="cursor-pointer bg-gray-400 text-center rounded-lg px-5 py-2"
+              onClick={GoBack}
             >
-              DeActivate
-            </p>
-          ) : (
-            <p
-              className="bg-green-400 text-center rounded-lg px-5 py-2"
-              onClick={handleReActivate}
+              Go back
+            </div>
+          </>
+        ) : (
+          <>
+            {" "}
+            <div className="cursor-pointer flex items-center gap-5">
+              <p
+                className="bg-green-400 text-center rounded-lg px-5 py-2 font-semibold"
+                onClick={HandleApprovePost}
+              >
+                Approve Post
+              </p>
+              <p
+                className="bg-red-500 text-center rounded-lg px-5 py-2 font-semibold"
+                onClick={HandleRejectPost}
+              >
+                Reject Post
+              </p>
+            </div>
+            <div
+              className="cursor-pointer bg-gray-400 text-center rounded-lg px-5 py-2"
+              onClick={GoBack}
             >
-              ReActivate
-            </p>
-          )}
-        </div>
-        <div
-          className="cursor-pointer bg-gray-400 text-center rounded-lg px-5 py-2"
-          onClick={GoBack}
-        >
-          Go back
-        </div>
+              Go back
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 };
 
-export default SinglePost;
+export default ApprovePost;

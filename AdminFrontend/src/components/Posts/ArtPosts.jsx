@@ -49,78 +49,6 @@ const AllPosts = () => {
     >
       <h1 className="font-bold md:text-4xl sm:text-xl">Art</h1>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
-        {/* <table className="w-full text-sm text-left rtl:text-right text-black border-collapse border border-gray-300">
-          <thead className="text-xs font-bold uppercase bg-gray-50 text-black">
-            <tr>
-              <th scope="col" className="px-6 py-3 border border-gray-300">
-                Id
-              </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300">
-                Img
-              </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300">
-                Author
-              </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300">
-                Title
-              </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300">
-                Category
-              </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300">
-                Date
-              </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300">
-                IsActive
-              </th>
-              <th scope="col" className="px-6 py-3 border border-gray-300"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentPosts.map((post) => (
-              <tr key={post.post_id} className="border border-gray-300">
-                <td className="px-6 py-4 border border-gray-300">
-                  {post.post_id}
-                </td>
-                <td className="px-6 py-4 border border-gray-300">
-                  <img
-                    className="w-[80px] h-[60px] rounded-md"
-                    src={`../upload/${post.post_img}`}
-                    alt="Post img"
-                  />
-                </td>
-                <td className="px-6 py-4 border border-gray-300">
-                  {post.username}
-                </td>
-                <td className="px-6 py-4 border text-nowrap border-gray-300">
-                  {post.title.substring(0, 20)}...
-                </td>
-                <td className="px-6 py-4 border text-center border-gray-300">
-                  {post.category}
-                </td>
-                <td className="px-6 py-4 border text-nowrap border-gray-300">
-                  {moment(post.date).fromNow()}
-                </td>
-                <td className="px-6 py-4 border cursor-pointer border-gray-300">
-                  {post.PostIsActive?.data?.[0] === 1 ? (
-                    <p className="bg-green-400 text-center rounded-lg px-5 py-2">
-                      Active
-                    </p>
-                  ) : (
-                    <p className="bg-red-500 text-center rounded-lg px-5 py-2">
-                      Disabled
-                    </p>
-                  )}
-                </td>
-                <td className="px-6 py-4 border border-gray-300 cursor-pointer">
-                  <Link to={`/post/${post.post_id}`}>
-                    <p>View</p>
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table> */}
         <table className="w-full text-sm text-left rtl:text-right text-black border-collapse border border-gray-300">
           <thead className="text-xs font-bold uppercase bg-gray-50 text-black">
             <tr>
@@ -188,7 +116,7 @@ const AllPosts = () => {
                 </td>
                 <td className="px-6 py-4 border border-gray-300 cursor-pointer">
                   <Link to={`/post/${post.post_id}`}>
-                    <p>View</p>
+                    <p className="underline">View</p>
                   </Link>
                 </td>
               </tr>

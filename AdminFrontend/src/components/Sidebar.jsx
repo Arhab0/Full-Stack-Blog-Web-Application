@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,8 @@ import Swal from "sweetalert2";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [pendingPost, setPendingPost] = useState(0);
+  const [rejectedPost, setRejectedPost] = useState(0);
   const [isPostsOpen, setIsPostsOpen] = useState(false);
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -40,6 +42,22 @@ const Sidebar = () => {
       });
     });
   };
+
+  const GetPendingPostCount = async () => {
+    await axios.get(`${baseUrl}/pendingPostCount`).then((res) => {
+      setPendingPost(res.data.PendingPost);
+    });
+  };
+  const GetRejectedPostCount = async () => {
+    await axios.get(`${baseUrl}/rejectedPostsCount`).then((res) => {
+      setRejectedPost(res.data.RejectedPost);
+    });
+  };
+  useEffect(() => {
+    GetPendingPostCount();
+    GetRejectedPostCount();
+  }, [isOpen]);
+
   return (
     <div className="flex h-screen hover:overflow-y-auto overflow-y-auto">
       <div
@@ -157,6 +175,17 @@ const Sidebar = () => {
                 <Link to="/user">
                   <span className={`${isOpen ? "inline" : "hidden"}`}>
                     Users
+                  </span>
+                </Link>
+              </li>
+              <li className={`p-2 rounded -mt-4`} onClick={toggleSidebar}>
+                <Link to="/pendingpost">
+                  <span className={`${isOpen ? "inline" : "hidden"}`}>
+                    Posts Request{" "}
+                    <span className="text-sm text-blue-700">
+                      {" "}
+                      ({pendingPost})
+                    </span>
                   </span>
                 </Link>
               </li>

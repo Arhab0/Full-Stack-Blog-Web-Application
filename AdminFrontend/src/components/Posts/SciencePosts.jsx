@@ -112,7 +112,7 @@ const SciencePosts = () => {
                 </td>
                 <td className="px-6 py-4 border border-gray-300 cursor-pointer">
                   <Link to={`/post/${post.post_id}`}>
-                    <p>View</p>
+                    <p className="underline">View</p>
                   </Link>
                 </td>
               </tr>

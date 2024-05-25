@@ -164,8 +164,8 @@ app.post("/logout", (req, res) => {
 // all post api
 app.get("/posts", (req, res) => {
   const q = req.query.cat
-    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where c.cat = ? and u.isActive =1 and p.isActive = 1 p.isPending = 0"
-    : "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where u.isActive = 1 and p.isActive = 1 and p.isPending = 0";
+    ? "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where c.cat = ? and u.isActive =1 and p.isActive = 1 and p.isPending = 0 and isRejected = 0"
+    : "select p.id,p.title,p.description,p.img,p.date,p.user_id,p.isActive, c.cat from posts as p join category as c on p.cat_id = c.id join users as u on u.id = p.user_id where u.isActive = 1 and p.isActive = 1 and p.isPending = 0 and isRejected = 0";
   db.query(q, [req.query.cat], (err, data) => {
     if (err) {
       res.json(err);
@@ -178,7 +178,7 @@ app.get("/posts", (req, res) => {
 // single post api
 app.get("/post/:id", (req, res) => {
   const q =
-    "select p.id,username,title,description,c.cat,p.cat_id,date,p.img as postImg,p.isActive,u.img as userImg from users as u join posts as p on u.id = p.user_id join category as c on p.cat_id = c.id where p.id = ?";
+    "select p.id,username,title,description,c.cat,p.cat_id,date,p.isRejected,p.img as postImg,p.isActive,u.img as userImg from users as u join posts as p on u.id = p.user_id join category as c on p.cat_id = c.id where p.id = ?";
   db.query(q, [req.params.id], (err, data) => {
     if (err) {
       res.json(err);
@@ -225,7 +225,7 @@ app.post("/add-post", (req, res) => {
       return res.status(403).json({ message: "token is not valid" });
     } else {
       const q =
-        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`,`isPending`) values(?,1,1)";
+        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`,`isPending`,`isRejected`) values(?,1,1,0)";
       const values = [
         req.body.title,
         req.body.description,
@@ -266,7 +266,8 @@ app.get("/search/:key", (req, res) => {
   const searchTerm = req.params.key;
   const query = `
   select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id
-        WHERE (p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%') and p.isActive = 1 and p.isPending = 0
+        WHERE (p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%') and p.isActive = 1 and p.isPending = 0 
+        
     `;
 
   db.query(query, (err, data) => {
@@ -420,6 +421,51 @@ app.get("/GetAllUsers", (req, res) => {
       res.send(err);
     }
     res.send(data);
+  });
+});
+
+// get pending posts
+app.get("/pendingPostCount", (req, res) => {
+  const q =
+    "select count(isPending) as PendingPost from posts where isPending = 1;";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data[0]);
+  });
+});
+
+app.get("/pendingPosts", (req, res) => {
+  const q =
+    "SELECT p.id AS post_id, p.user_id, u.username, p.title,p.img AS post_img,p.isRejected,p.isPending, p.date, c.cat AS category FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where p.isPending = 1 and (p.isRejected = 1 or p.isRejected =0)";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data);
+  });
+});
+
+app.put("/approvePost/:id", (req, res) => {
+  const postId = req.params.id;
+  const q = `update posts set isPending = 0 where id = ${postId}`;
+  db.query(q, (err, results) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json({ message: "Post has been approved" });
+  });
+});
+
+app.put("/rejectPost/:id", (req, res) => {
+  const postId = req.params.id;
+  const q = `update posts set isRejected = 1 where id = ${postId}`;
+  db.query(q, (err, results) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json({ message: "Post has been rejected" });
   });
 });
 

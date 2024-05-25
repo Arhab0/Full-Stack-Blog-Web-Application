@@ -12,9 +12,11 @@ import SciencePosts from "./components/Posts/SciencePosts";
 import DesignPosts from "./components/Posts/DesignPosts";
 import CinemaPosts from "./components/Posts/CinemaPosts";
 import SinglePost from "./components/SinglePost";
+import PendingPosts from "./components/Posts/PendingPosts";
+import ApprovePost from "./components/Posts/ApprovePost";
 
 function App() {
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   return (
     <div className="flex">
@@ -30,6 +32,8 @@ function App() {
           <Route path="/designpost" element={<DesignPosts />} />
           <Route path="/user" element={<Users />} />
           <Route path="/post/:id" element={<SinglePost />} />
+          <Route path="/pendingpost" element={<PendingPosts />} />
+          <Route path="/approvepost/:id" element={<ApprovePost />} />
         </Routes>
       </BrowserRouter>
     </div>
