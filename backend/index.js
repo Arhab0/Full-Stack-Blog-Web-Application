@@ -87,10 +87,31 @@ app.post("/register", (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, salt);
 
     const Q =
-      "insert into users (username,email,password,gender,role_id,isActive) values(?,?,?,?,2,1)";
+      "insert into users (username,email,password,gender,age,role_id,isActive) values(?,?,?,?,?,2,1)";
     db.query(
       Q,
-      [req.body.username, req.body.email, hash, req.body.gender],
+      [req.body.username, req.body.email, hash, req.body.gender, req.body.age],
+      (err, response) => {
+        if (err) return res.json(err);
+        return res.json({ message: "User has been created" });
+      }
+    );
+  });
+});
+app.post("/adminregister", (req, res) => {
+  const q = "select * from users where username = ? or email = ?";
+  db.query(q, [req.body.username, req.body.email], (err, data) => {
+    if (err) return res.json(err);
+    if (data.length) return res.json({ message: "User already exits" });
+
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, salt);
+
+    const Q =
+      "insert into users (username,email,password,gender,age,role_id,isActive) values(?,?,?,?,?,1,1)";
+    db.query(
+      Q,
+      [req.body.username, req.body.email, hash, req.body.gender, req.body.age],
       (err, response) => {
         if (err) return res.json(err);
         return res.json({ message: "User has been created" });
@@ -281,6 +302,68 @@ app.get("/search/:key", (req, res) => {
 });
 
 // ========================  admin api
+
+// getting total users
+app.get("/userscount", (req, res) => {
+  const q = "select count(*) as TotalUsers from users where role_id = 2";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data[0]);
+  });
+});
+app.get("/activeuserscount", (req, res) => {
+  const q =
+    "select count(*) as TotalActiveUsers from users where isActive = 1 and role_id = 2";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data[0]);
+  });
+});
+app.get("/deactivateuserscount", (req, res) => {
+  const q =
+    "select count(*) as TotalDeActivatedUsers from users where isActive = 0";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data[0]);
+  });
+});
+
+// getting all posts counts
+app.get("/postscount", (req, res) => {
+  const q = "select count(*) as TotalPosts from posts";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data[0]);
+  });
+});
+app.get("/activepostscount", (req, res) => {
+  const q =
+    "select count(*) as TotalActivePosts from posts where isPending = 0";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data[0]);
+  });
+});
+app.get("/rejectedpostscount", (req, res) => {
+  const q =
+    "select count(*) as TotalDeActivatePosts from posts where isRejected = 1";
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(data[0]);
+  });
+});
 
 // getting post by category
 app.get("/AdminGetArtPost", (req, res) => {

@@ -57,8 +57,6 @@ const SinglePost = () => {
     navigate(-1);
   };
 
-  console.log(post);
-
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
 

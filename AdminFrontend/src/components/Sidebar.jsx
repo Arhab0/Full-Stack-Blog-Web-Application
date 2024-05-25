@@ -7,7 +7,8 @@ import { clearUser } from "../store/authSlice";
 import { baseUrl } from "../helper/baseUrl";
 import { Link, useNavigate } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
-import AdminPic from "../assets/Admin-Profile-Vector-PNG-Clipart.png";
+import AdminMalePic from "../assets/Admin-Profile-Vector-PNG-Clipart.png";
+import AdminFemalePic from "../assets/femaleAdmin.png";
 import Swal from "sweetalert2";
 
 const Sidebar = () => {
@@ -78,7 +79,19 @@ const Sidebar = () => {
             </button>
             <div className={`${isOpen ? "block" : "hidden"} absolute top-10`}>
               <div className="flex flex-col text-center">
-                <img src={AdminPic} className="w-[130px] h-[130px]" alt="" />
+                {user?.gender == "male" ? (
+                  <img
+                    src={AdminMalePic}
+                    className="w-[130px] h-[130px]"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    src={AdminFemalePic}
+                    className="w-[130px] h-[130px]"
+                    alt=""
+                  />
+                )}
                 <h1 className="mt-3 font-bold text-lg">{user?.username}</h1>
               </div>
             </div>
@@ -187,12 +200,20 @@ const Sidebar = () => {
             </ul>
           </nav>
         </div>
-        <div className="px-4 py-2">
+        <div className="px-4 py-2 flex flex-col space-y-4">
+          <button
+            onClick={() => {
+              navigate("/adminregister");
+            }}
+            className={`flex items-center w-full `}
+          >
+            <span className={`${isOpen ? "inline" : "hidden"}`}>
+              Create Admin
+            </span>
+          </button>
           <button
             onClick={handleLogout}
-            className={`flex items-center w-full ${
-              isOpen ? "hover:bg-gray-400" : ""
-            } p-2 rounded transition-all duration-300`}
+            className={`flex items-center w-full pb-4`}
           >
             <span className={`${isOpen ? "inline" : "hidden"}`}>Logout</span>
           </button>

@@ -21,6 +21,7 @@ import SinglePost from "./components/SinglePost.jsx";
 import PendingPosts from "./components/Posts/PendingPosts.jsx";
 import ApprovePost from "./components/Posts/ApprovePost.jsx";
 import Login from "./components/Login.jsx";
+import RegisterAdmin from "./components/RegisterAdmin.jsx";
 
 const router = createBrowserRouter([
   {
@@ -78,8 +79,12 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "login",
+    path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/adminregister",
+    element: <RegisterAdmin />,
   },
 ]);
 
