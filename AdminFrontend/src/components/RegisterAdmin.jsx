@@ -80,7 +80,7 @@ const RegisterAdmin = () => {
 
   return (
     <div className="flex items-center justify-center flex-col min-h-screen bg-gray-200 p-9 overflow-hidden">
-      <h1 className="text-4xl font-bold text-teal-700 mb-8">Register Admin</h1>
+      <h1 className="text-3xl font-bold text-teal-700 mb-8">Register Admin</h1>
       <form
         className="flex flex-col gap-5 bg-white p-6 w-full max-w-md rounded-lg shadow-md"
         onSubmit={handleSubmit}

@@ -6,6 +6,7 @@ import { baseUrl } from "../helper/baseUrl";
 
 import axios from "axios";
 import { loginUser } from "../store/authSlice";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -42,6 +43,21 @@ const Login = () => {
             setError(res.data.message);
           } else {
             dispatch(loginUser(res.data));
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Signed in successfully",
+            });
             navigate("/");
           }
         }
