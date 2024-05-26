@@ -64,11 +64,11 @@ const Sidebar = () => {
   }, [isOpen]);
 
   return (
-    <div className="flex h-screen hover:overflow-y-auto overflow-y-auto fixed">
+    <div className="flex h-screen fixed">
       <div
         className={`${
           isOpen ? "w-64" : "w-16"
-        } bg-gray-300 text-black transition-all duration-300 flex flex-col justify-between overflow-hidden`}
+        } bg-gray-300 text-black transition-all duration-300 flex flex-col justify-between  overflow-y-auto`}
       >
         <div className="relative">
           <div className="flex flex-col justify-center items-center px-4 py-2">

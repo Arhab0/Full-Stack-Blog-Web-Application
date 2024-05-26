@@ -271,8 +271,13 @@ app.post("/add-post", (req, res) => {
 
 // update post api
 app.put("/update-post/:id", (req, res) => {
-  const q = `update posts set title=? ,description=? , cat_id=? where id=${req.params.id}`;
-  const values = [req.body.title, req.body.description, req.body.cat_id];
+  const q = `update posts set title=? ,description=? , cat_id=?, img = ? where id=${req.params.id}`;
+  const values = [
+    req.body.title,
+    req.body.description,
+    req.body.cat_id,
+    req.body.img,
+  ];
   db.query(q, values, (err, data) => {
     if (err) {
       res.json(err);
@@ -510,7 +515,7 @@ app.get("/GetAllUsers", (req, res) => {
 // get pending posts
 app.get("/pendingPostCount", (req, res) => {
   const q =
-    "select count(isPending) as PendingPost from posts where isPending = 1;";
+    "select count(isPending) as PendingPost from posts where isPending = 1 and isRejected != 1;";
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);

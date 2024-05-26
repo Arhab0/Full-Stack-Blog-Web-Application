@@ -4,17 +4,26 @@ import { useStateContext } from "../context/ContextProvider";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../helper/baseUrl";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { activeMenu } = useStateContext();
-  const { user } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [totalUser, setTotalUser] = useState(0);
   const [totalActiveUser, setTotalActiveUser] = useState(0);
   const [totalDeActivateUsers, setTotalDeActivateUsers] = useState(0);
   const [totalPosts, setTotalPosts] = useState(0);
   const [totalActivePosts, setTotalActivePosts] = useState(0);
   const [totalDeActivatePost, setTotalDeActivatePost] = useState(0);
+  const [totalPendingPosts, setTotalPendingPosts] = useState(0);
   const [screenSize, setScreenSize] = useState(window.innerWidth);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     axios.get(`${baseUrl}/userscount`).then((res) => {
@@ -51,6 +60,11 @@ const Dashboard = () => {
       setTotalDeActivatePost(res.data.TotalDeActivatePosts);
     });
   }, []);
+  useEffect(() => {
+    axios.get(`${baseUrl}/pendingPostCount`).then((res) => {
+      setTotalPendingPosts(res.data.PendingPost);
+    });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
@@ -67,7 +81,7 @@ const Dashboard = () => {
     return null;
   }
   return (
-    <div className={`${activeMenu ? "pl-[280px]" : "pl-[100px]"} pt-8 w-full`}>
+    <div className={`${activeMenu ? "pl-[255px]" : "pl-[60px]"}  w-full`}>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 pb-4">
         <div className="bg-white p-6 rounded-lg drop-shadow-2xl w-full max-w-4xl">
           <h1 className="text-3xl font-bold text-gray-800">
@@ -146,6 +160,19 @@ const Dashboard = () => {
                     {totalDeActivatePost}
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-center mt-6 mb-7">
+            <div className="flex items-center p-4 bg-blue-100 rounded-lg w-[349px]">
+              <span className="flex-shrink-0 w-10 h-10 bg-yellow-500 text-white rounded-full flex items-center justify-center">
+                P
+              </span>
+              <div className="ml-4">
+                <p className="font-semibold text-yellow-700">
+                  Total Pending Posts
+                </p>
+                <p className="text-yellow-500 font-bold">{totalPendingPosts}</p>
               </div>
             </div>
           </div>

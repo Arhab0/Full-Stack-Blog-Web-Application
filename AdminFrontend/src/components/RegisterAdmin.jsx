@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { TEInput, TERipple } from "tw-elements-react";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../helper/baseUrl";
 import Swal from "sweetalert2";
@@ -82,58 +83,83 @@ const RegisterAdmin = () => {
     <div className="flex items-center justify-center flex-col min-h-screen bg-gray-200 p-9 overflow-hidden">
       <h1 className="text-3xl font-bold text-teal-700 mb-8">Register Admin</h1>
       <form
-        className="flex flex-col gap-5 bg-white p-6 w-full max-w-md rounded-lg shadow-md"
+        className="flex flex-col gap-5 bg-white p-6 w-full max-w-md rounded-lg shadow-md mb-8"
         onSubmit={handleSubmit}
       >
-        <input
+        <TEInput
           type="text"
-          name="username"
-          placeholder="Enter your name"
-          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          label="User Name"
+          size="lg"
+          className="mb-6"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
+          onChange={(e) => {
+            setUsername(e.target.value);
+          }}
+        ></TEInput>
+
+        <TEInput
           type="text"
-          name="gender"
-          placeholder="Enter your gender"
-          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          label="User gender"
+          size="lg"
+          className="mb-6"
           value={gender}
-          onChange={(e) => setGender(e.target.value)}
-        />
-        <input
+          onChange={(e) => {
+            setGender(e.target.value);
+          }}
+        ></TEInput>
+
+        <TEInput
           type="number"
-          name="age"
-          placeholder="Enter your age"
-          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          label="User age"
+          size="lg"
+          className="mb-6"
           value={age}
-          onChange={(e) => setAge(e.target.value)}
-        />
-        <input
+          onChange={(e) => {
+            setAge(e.target.value);
+          }}
+        ></TEInput>
+
+        <TEInput
           type="email"
-          name="email"
-          placeholder="Enter your email"
-          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          label="User email"
+          size="lg"
+          className="mb-6"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+        ></TEInput>
+
+        <TEInput
           type="password"
-          name="password"
-          placeholder="Enter your password"
-          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          label="User password"
+          size="lg"
+          className="mb-6"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
+        ></TEInput>
+
         {error && (
           <p className="text-red-700 font-semibold text-center">{error}</p>
         )}
-        <button
+        {/* <button
           type="submit"
           className="bg-teal-500 font-bold text-white p-3 rounded transition-transform transform hover:scale-105"
         >
           Create Admin
-        </button>
+        </button> */}
+        <div className="flex items-center justify-center">
+          <TERipple rippleColor="light">
+            <button
+              type="submit"
+              className="inline-block text-nowrap rounded bg-primary md:px-36 px-20 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Register Admin
+            </button>
+          </TERipple>
+        </div>
       </form>
     </div>
   );

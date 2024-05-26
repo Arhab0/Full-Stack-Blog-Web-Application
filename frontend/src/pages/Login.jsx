@@ -66,7 +66,7 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center flex-col h-screen bg-gray-200 p-9 overflow-hidden">
       <h1 className="text-3xl font-bold text-teal-700 mb-8">Login</h1>
-      <form className="flex flex-col gap-5 bg-white p-6 w-full max-w-md rounded-lg shadow-md">
+      <form className="flex flex-col gap-5 bg-white p-6  w-full max-w-md rounded-lg shadow-md">
         <input
           type="text"
           name="username"
@@ -88,7 +88,7 @@ const Login = () => {
         )}
         <button
           onClick={handleSubmit}
-          className="bg-teal-700 text-white p-3 border-none
+          className="bg-teal-700 text-white p-3 border-none mt-4
           rounded transition-all ease-out duration-200
           hover:-translate-y-1"
         >
