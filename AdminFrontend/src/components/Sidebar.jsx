@@ -107,26 +107,43 @@ const Sidebar = () => {
           </div>
           <nav className="flex-grow overflow-y-auto">
             <ul className="space-y-[0.5px] px-4 mt-[210px]">
-              <li className={` p-2 rounded`}>
+              <li
+                className=" transition-all duration-300 p-2 rounded"
+                onClick={toggleSidebar}
+              >
+                <Link to="/">
+                  <span className={`${isOpen ? "inline" : "hidden"}`}>
+                    Home
+                  </span>
+                </Link>
+              </li>
+
+              <li className="p-2 rounded">
                 <button
                   onClick={togglePosts}
-                  className="w-full text-left flex items-center"
+                  className="w-full text-left flex items-center transition-all duration-500"
                 >
                   <span
-                    className={`${
+                    className={`inline-flex ${
                       isOpen ? "inline" : "hidden"
-                    } inline-flex items-center gap-2`}
+                    } items-center gap-2 transition-opacity duration-500`}
                   >
-                    Posts{" "}
+                    Posts
                     <span className="text-[11px]">
                       <FaArrowDown />
                     </span>
                   </span>
                 </button>
-                {isPostsOpen && (
+                <div
+                  className={`overflow-hidden transition-all duration-500 ${
+                    isPostsOpen ? "max-h-screen" : "max-h-0"
+                  }`}
+                >
                   <ul className="ml-4 mt-2 space-y-2">
                     <li
-                      className=" transition-all duration-300 p-2 rounded"
+                      className={`transition-opacity duration-500 ${
+                        isPostsOpen ? "opacity-100" : "opacity-0"
+                      } p-1 rounded`}
                       onClick={toggleSidebar}
                     >
                       <Link to="/artpost">
@@ -136,7 +153,9 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li
-                      className=" transition-all duration-300 p-2 rounded"
+                      className={`transition-opacity duration-500 ${
+                        isPostsOpen ? "opacity-100" : "opacity-0"
+                      } p-1 rounded`}
                       onClick={toggleSidebar}
                     >
                       <Link to="/foodpost">
@@ -146,7 +165,9 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li
-                      className=" transition-all duration-300 p-2 rounded"
+                      className={`transition-opacity duration-500 ${
+                        isPostsOpen ? "opacity-100" : "opacity-0"
+                      } p-1 rounded`}
                       onClick={toggleSidebar}
                     >
                       <Link to="/technologypost">
@@ -156,7 +177,9 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li
-                      className=" transition-all duration-300 p-2 rounded"
+                      className={`transition-opacity duration-500 ${
+                        isPostsOpen ? "opacity-100" : "opacity-0"
+                      } p-1 rounded`}
                       onClick={toggleSidebar}
                     >
                       <Link to="/sciencepost">
@@ -166,7 +189,9 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li
-                      className=" transition-all duration-300 p-2 rounded"
+                      className={`transition-opacity duration-500 ${
+                        isPostsOpen ? "opacity-100" : "opacity-0"
+                      } p-1 rounded`}
                       onClick={toggleSidebar}
                     >
                       <Link to="/designpost">
@@ -176,7 +201,9 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li
-                      className=" transition-all duration-300 p-2 rounded"
+                      className={`transition-opacity duration-500 ${
+                        isPostsOpen ? "opacity-100" : "opacity-0"
+                      } p-1 rounded`}
                       onClick={toggleSidebar}
                     >
                       <Link to="/cinemapost">
@@ -186,7 +213,7 @@ const Sidebar = () => {
                       </Link>
                     </li>
                   </ul>
-                )}
+                </div>
               </li>
               <li className={`p-2 rounded -mt-4`} onClick={toggleSidebar}>
                 <Link to="/user">
