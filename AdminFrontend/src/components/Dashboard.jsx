@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../helper/baseUrl";
 import { useNavigate } from "react-router-dom";
-
+import { FaUser, FaUserCheck, FaUserSlash } from "react-icons/fa";
+import TotalPostImg from "../assets/write.png";
+import ActivePostImg from "../assets/ActivePostImg.png";
+import { MdOutlinePending } from "react-icons/md";
+import { TbArticleOff } from "react-icons/tb";
 const Dashboard = () => {
   const { activeMenu } = useStateContext();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -82,7 +86,7 @@ const Dashboard = () => {
   }
   return (
     <div className={`${activeMenu ? "pl-[255px]" : "pl-[60px]"}  w-full`}>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 pb-4">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <div className="bg-white p-6 rounded-lg drop-shadow-2xl w-full max-w-4xl">
           <h1 className="text-3xl font-bold text-gray-800">
             Welcome, {user?.username}!
@@ -95,7 +99,7 @@ const Dashboard = () => {
             <div className="space-y-6">
               <div className="flex items-center p-4 bg-blue-100 rounded-lg">
                 <span className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                  U
+                  <FaUser />
                 </span>
                 <div className="ml-4">
                   <p className="font-semibold text-blue-700">Total Users</p>
@@ -104,7 +108,7 @@ const Dashboard = () => {
               </div>
               <div className="flex items-center p-4 bg-green-100 rounded-lg">
                 <span className="flex-shrink-0 w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center">
-                  A
+                  <FaUserCheck />
                 </span>
                 <div className="ml-4">
                   <p className="font-semibold text-green-700">
@@ -113,9 +117,9 @@ const Dashboard = () => {
                   <p className="text-green-500 font-bold">{totalActiveUser}</p>
                 </div>
               </div>
-              <div className="flex items-center p-4 bg-yellow-100 rounded-lg">
+              <div className="flex items-center p-4 bg-red-100 rounded-lg">
                 <span className="flex-shrink-0 w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center">
-                  !
+                  <FaUserSlash />
                 </span>
                 <div className="ml-4">
                   <p className="font-semibold text-red-700">
@@ -129,8 +133,8 @@ const Dashboard = () => {
             </div>
             <div className="space-y-6">
               <div className="flex items-center p-4 bg-blue-100 rounded-lg">
-                <span className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center">
-                  P
+                <span className="flex-shrink-0 w-10 h-10  text-white rounded-full flex items-center justify-center">
+                  <img src={TotalPostImg} className="w-16" />
                 </span>
                 <div className="ml-4">
                   <p className="font-semibold text-blue-700">Total Posts</p>
@@ -139,7 +143,7 @@ const Dashboard = () => {
               </div>
               <div className="flex items-center p-4 bg-green-100 rounded-lg">
                 <span className="flex-shrink-0 w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center">
-                  A
+                  <img src={ActivePostImg} className="w-16" />
                 </span>
                 <div className="ml-4">
                   <p className="font-semibold text-green-700">
@@ -148,9 +152,9 @@ const Dashboard = () => {
                   <p className="text-green-500 font-bold">{totalActivePosts}</p>
                 </div>
               </div>
-              <div className="flex items-center p-4 bg-yellow-100 rounded-lg">
+              <div className="flex items-center p-4 bg-red-100 rounded-lg">
                 <span className="flex-shrink-0 w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center">
-                  !
+                  <TbArticleOff />
                 </span>
                 <div className="ml-4">
                   <p className="font-semibold text-red-700">
@@ -164,9 +168,9 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex items-center justify-center mt-6 mb-7">
-            <div className="flex items-center p-4 bg-blue-100 rounded-lg w-[349px]">
+            <div className="flex items-center p-4 bg-yellow-100 rounded-lg w-[349px]">
               <span className="flex-shrink-0 w-10 h-10 bg-yellow-500 text-white rounded-full flex items-center justify-center">
-                P
+                <MdOutlinePending />
               </span>
               <div className="ml-4">
                 <p className="font-semibold text-yellow-700">

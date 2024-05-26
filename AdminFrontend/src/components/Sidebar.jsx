@@ -10,6 +10,12 @@ import { useStateContext } from "../context/ContextProvider";
 import AdminMalePic from "../assets/Admin-Profile-Vector-PNG-Clipart.png";
 import AdminFemalePic from "../assets/femaleAdmin.png";
 import Swal from "sweetalert2";
+import { RxDashboard } from "react-icons/rx";
+import { RiArticleFill } from "react-icons/ri";
+import { FaRegUser } from "react-icons/fa";
+import { MdOutlineCreate } from "react-icons/md";
+import { VscGitPullRequestNewChanges } from "react-icons/vsc";
+import { TbLogout } from "react-icons/tb";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -112,8 +118,12 @@ const Sidebar = () => {
                 onClick={toggleSidebar}
               >
                 <Link to="/">
-                  <span className={`${isOpen ? "inline" : "hidden"}`}>
-                    Home
+                  <span
+                    className={`${
+                      isOpen ? "inline" : "hidden"
+                    } flex items-center gap-2`}
+                  >
+                    <RxDashboard /> Home
                   </span>
                 </Link>
               </li>
@@ -128,7 +138,7 @@ const Sidebar = () => {
                       isOpen ? "inline" : "hidden"
                     } items-center gap-2 transition-opacity duration-500`}
                   >
-                    Posts
+                    <RiArticleFill /> Posts
                     <span className="text-[11px]">
                       <FaArrowDown />
                     </span>
@@ -217,15 +227,23 @@ const Sidebar = () => {
               </li>
               <li className={`p-2 rounded -mt-4`} onClick={toggleSidebar}>
                 <Link to="/user">
-                  <span className={`${isOpen ? "inline" : "hidden"}`}>
-                    Users
+                  <span
+                    className={`${
+                      isOpen ? "inline" : "hidden"
+                    } flex items-center gap-2`}
+                  >
+                    <FaRegUser /> Users
                   </span>
                 </Link>
               </li>
               <li className={`p-2 rounded -mt-4`} onClick={toggleSidebar}>
                 <Link to="/pendingpost">
-                  <span className={`${isOpen ? "inline" : "hidden"}`}>
-                    Posts Request{" "}
+                  <span
+                    className={`${
+                      isOpen ? "inline" : "hidden"
+                    } flex items-center gap-2`}
+                  >
+                    <VscGitPullRequestNewChanges /> Posts Request{" "}
                     <span className="text-sm text-blue-700">
                       {" "}
                       ({pendingPost})
@@ -243,15 +261,25 @@ const Sidebar = () => {
             }}
             className={`flex items-center w-full `}
           >
-            <span className={`${isOpen ? "inline" : "hidden"}`}>
-              Create Admin
+            <span
+              className={`${
+                isOpen ? "inline" : "hidden"
+              } flex items-center gap-2`}
+            >
+              <MdOutlineCreate /> Create Admin
             </span>
           </button>
           <button
             onClick={handleLogout}
             className={`flex items-center w-full pb-4`}
           >
-            <span className={`${isOpen ? "inline" : "hidden"}`}>Logout</span>
+            <span
+              className={`${
+                isOpen ? "inline" : "hidden"
+              } flex items-center gap-2`}
+            >
+              <TbLogout /> Logout
+            </span>
           </button>
         </div>
       </div>
