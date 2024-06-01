@@ -10,9 +10,8 @@ import { useStateContext } from "../context/ContextProvider";
 import AdminMalePic from "../assets/Admin-Profile-Vector-PNG-Clipart.png";
 import AdminFemalePic from "../assets/femaleAdmin.png";
 import Swal from "sweetalert2";
-import { RxDashboard } from "react-icons/rx";
 import { RiArticleFill } from "react-icons/ri";
-import { FaRegUser } from "react-icons/fa";
+import { FaRegUser, FaTachometerAlt } from "react-icons/fa";
 import { MdOutlineCreate } from "react-icons/md";
 import { VscGitPullRequestNewChanges } from "react-icons/vsc";
 import { TbLogout } from "react-icons/tb";
@@ -123,7 +122,8 @@ const Sidebar = () => {
                       isOpen ? "inline" : "hidden"
                     } flex items-center gap-2`}
                   >
-                    <RxDashboard /> Home
+                    <FaTachometerAlt className="text-[12px] text-gray-800" />{" "}
+                    Home
                   </span>
                 </Link>
               </li>
@@ -138,7 +138,8 @@ const Sidebar = () => {
                       isOpen ? "inline" : "hidden"
                     } items-center gap-2 transition-opacity duration-500`}
                   >
-                    <RiArticleFill /> Posts
+                    <RiArticleFill className="text-[12px] text-gray-800" />{" "}
+                    Posts
                     <span className="text-[11px]">
                       <FaArrowDown />
                     </span>
@@ -232,7 +233,7 @@ const Sidebar = () => {
                       isOpen ? "inline" : "hidden"
                     } flex items-center gap-2`}
                   >
-                    <FaRegUser /> Users
+                    <FaRegUser className="text-[12px] text-gray-800" /> Users
                   </span>
                 </Link>
               </li>
@@ -243,7 +244,8 @@ const Sidebar = () => {
                       isOpen ? "inline" : "hidden"
                     } flex items-center gap-2`}
                   >
-                    <VscGitPullRequestNewChanges /> Posts Request{" "}
+                    <VscGitPullRequestNewChanges className="text-[12px] text-gray-800" />{" "}
+                    Posts Request{" "}
                     <span className="text-sm text-blue-700">
                       {" "}
                       ({pendingPost})
@@ -254,7 +256,7 @@ const Sidebar = () => {
             </ul>
           </nav>
         </div>
-        <div className="px-4 py-2 flex flex-col space-y-4">
+        <div className="px-4 py-2 flex flex-col text-blue-900 font-bold space-y-4">
           <button
             onClick={() => {
               navigate("/adminregister");
@@ -266,7 +268,11 @@ const Sidebar = () => {
                 isOpen ? "inline" : "hidden"
               } flex items-center gap-2`}
             >
-              <MdOutlineCreate /> Create Admin
+              <MdOutlineCreate
+                className="text-[14px] font-bold text-blue-900"
+                style={{ fontSize: "16px", fontWeight: "bolder" }}
+              />
+              Create Admin
             </span>
           </button>
           <button
@@ -278,7 +284,11 @@ const Sidebar = () => {
                 isOpen ? "inline" : "hidden"
               } flex items-center gap-2`}
             >
-              <TbLogout /> Logout
+              <TbLogout
+                className="text-[14px] font-bold text-blue-900"
+                style={{ fontSize: "16px", fontWeight: "bolder" }}
+              />
+              Logout
             </span>
           </button>
         </div>
