@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 
 const SciencePosts = () => {
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(7);
   const { activeMenu } = useStateContext();
+  const [authorFilter, setAuthorFilter] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -26,17 +28,27 @@ const SciencePosts = () => {
         setError("");
       }
       setPosts(res.data);
+      setFilteredPosts(res.data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  // Get current posts
+  const handleFilter = () => {
+    let filtered = posts;
+    if (authorFilter) {
+      filtered = filtered.filter((post) =>
+        post.username.toLowerCase().includes(authorFilter.toLowerCase())
+      );
+    }
+    setFilteredPosts(filtered);
+    setCurrentPage(1); // Reset to first page on filter
+  };
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -46,6 +58,23 @@ const SciencePosts = () => {
       } pt-8 overflow-y-auto`}
     >
       <h1 className="font-bold md:text-4xl sm:text-xl">Science</h1>
+
+      <div className="mt-6">
+        <input
+          type="text"
+          placeholder="Filter by author"
+          value={authorFilter}
+          onChange={(e) => setAuthorFilter(e.target.value)}
+          className="border p-2 mr-2"
+        />
+        <button
+          onClick={handleFilter}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Filter
+        </button>
+      </div>
+
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
         <table className="w-full text-sm text-left rtl:text-right text-black border-collapse border border-gray-300">
           <thead className="text-xs font-bold uppercase bg-gray-50 text-black">
@@ -120,10 +149,10 @@ const SciencePosts = () => {
           </tbody>
         </table>
         <div className="flex justify-center gap-6 items-center my-5">
-          showing {currentPosts.length} posts out of {posts.length}
+          Showing {currentPosts.length} posts out of {filteredPosts.length}
           <ul className="flex space-x-2">
             {Array.from({
-              length: Math.ceil(posts.length / postsPerPage),
+              length: Math.ceil(filteredPosts.length / postsPerPage),
             }).map((_, index) => (
               <li key={index}>
                 <button

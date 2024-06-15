@@ -95,16 +95,10 @@ const ApprovePost = () => {
             />
             <div className="flex items-center gap-4 mt-3">
               {/* info */}
-              {post.userImg && (
-                <img
-                  src={post.userImg}
-                  className="w-[60px] h-[60px] rounded-full"
-                  alt=""
-                />
-              )}
+
               {post.userImg ? (
                 <img
-                  src={post.userImg}
+                  src={`../upload/${post.userImg}`}
                   className="w-[60px] h-[60px] rounded-full"
                   alt=""
                 />
