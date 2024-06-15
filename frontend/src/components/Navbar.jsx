@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import Logo from "../img/logo.png";
 import { Link } from "react-router-dom";
 import { FaBars, FaUser } from "react-icons/fa";
@@ -85,11 +85,21 @@ const Navbar = () => {
           {isLoggedIn && (
             <span className="flex items-center gap-1.5 hover:-translate-y-1 duration-200 ">
               <span className={`${isLoggedIn ? "block" : "hidden"}`}>
-                <FaUser className="text-teal-600 cursor-pointer" />
+                {user?.img == null ? (
+                  <FaUser className="text-teal-600 cursor-pointer" />
+                ) : (
+                  <img
+                    src={`../upload/${user?.img}`}
+                    alt=""
+                    className="w-6 h-6 rounded-full"
+                  />
+                )}
               </span>
-              <span className="text-teal-600 font-bold cursor-pointer">
-                {user?.username}
-              </span>
+              <Link to="/profile">
+                <span className="text-teal-600 font-bold cursor-pointer">
+                  {user?.username}
+                </span>
+              </Link>
             </span>
           )}
 

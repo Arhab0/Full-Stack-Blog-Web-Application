@@ -14,6 +14,7 @@ import SinglePost from "./pages/SinglePost.jsx";
 import Home from "./pages/Home.jsx";
 import UpdatePost from "./pages/UpdatePost.jsx";
 import ResetPassword from "./components/ResetPassword.jsx";
+import Profile from "./components/Profile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -47,8 +48,12 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "resetPassword",
+    path: "/resetPassword",
     element: <ResetPassword />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
 ]);
 

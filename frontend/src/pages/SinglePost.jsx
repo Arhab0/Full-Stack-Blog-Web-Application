@@ -91,17 +91,10 @@ const SinglePost = () => {
             />
             <div className="flex items-center gap-4 mt-3">
               {/* info */}
-              {post.userImg && (
-                <img
-                  src={post.userImg}
-                  className="w-[60px] h-[60px] rounded-full"
-                  alt=""
-                />
-              )}
               {post.userImg ? (
                 <img
-                  src={post.userImg}
-                  className="w-[60px] h-[60px] rounded-full"
+                  src={`../upload/${post.userImg}`}
+                  className="w-10 h-10 rounded-full"
                   alt=""
                 />
               ) : (

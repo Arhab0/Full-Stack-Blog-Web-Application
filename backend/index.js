@@ -214,6 +214,39 @@ app.post("/logout", (req, res) => {
     .json({ message: "User has been logout" });
 });
 
+// ======================== userinfo api
+
+app.get("/userinfo/:id", (req, res) => {
+  const q = `select * from users where id = ${req.params.id}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    } else {
+      const { password, ...other } = data[0];
+      res.send(other);
+    }
+  });
+});
+
+app.put("/update-user/:id", (req, res) => {
+  const q = `update users set username=? ,gender=? , age=?,email=?,secretMessage=?, img=? where id=${req.params.id}`;
+  const values = [
+    req.body.username,
+    req.body.gender,
+    req.body.age,
+    req.body.email,
+    req.body.secretMessage,
+    req.body.img,
+  ];
+  db.query(q, values, (err, data) => {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json({ message: "user info has been updated" });
+    }
+  });
+});
+
 // ========================  post api
 
 // all post api
