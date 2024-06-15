@@ -22,6 +22,7 @@ import PendingPosts from "./components/Posts/PendingPosts.jsx";
 import ApprovePost from "./components/Posts/ApprovePost.jsx";
 import Login from "./components/Login.jsx";
 import RegisterAdmin from "./components/RegisterAdmin.jsx";
+import Profile from "./components/Profile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
   {
     path: "/adminregister",
     element: <RegisterAdmin />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
 ]);
 

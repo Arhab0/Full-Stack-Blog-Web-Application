@@ -15,6 +15,7 @@ import { FaRegUser, FaTachometerAlt } from "react-icons/fa";
 import { MdOutlineCreate } from "react-icons/md";
 import { VscGitPullRequestNewChanges } from "react-icons/vsc";
 import { TbLogout } from "react-icons/tb";
+import { CiSettings } from "react-icons/ci";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -93,7 +94,8 @@ const Sidebar = () => {
             </button>
             <div className={`${isOpen ? "block" : "hidden"} absolute top-10`}>
               <div className="flex flex-col text-center">
-                {user?.gender == "male" ? (
+                {/* {user?.gender == "male"  ?
+                (
                   <img
                     src={AdminMalePic}
                     className="w-[130px] h-[130px]"
@@ -102,6 +104,33 @@ const Sidebar = () => {
                 ) : (
                   <img
                     src={AdminFemalePic}
+                    className="w-[130px] h-[130px]"
+                    alt=""
+                  />
+                )} */}
+                {user?.gender == "male" ? (
+                  user?.img == null ? (
+                    <img
+                      src={AdminMalePic}
+                      className="w-[130px] h-[130px]"
+                      alt=""
+                    />
+                  ) : (
+                    <img
+                      src={`../upload/${user?.img}`}
+                      className="w-[130px] h-[130px] rounded-full"
+                      alt=""
+                    />
+                  )
+                ) : user?.gender == "female" ? (
+                  <img
+                    src={AdminFemalePic}
+                    className="w-[130px] h-[130px]"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    src={`../upload/${user?.img}`}
                     className="w-[130px] h-[130px]"
                     alt=""
                   />
@@ -259,6 +288,25 @@ const Sidebar = () => {
         <div className="px-4 py-2 flex flex-col text-blue-900 font-bold space-y-4">
           <button
             onClick={() => {
+              navigate("/profile");
+            }}
+            className={`flex items-center w-full `}
+          >
+            <span
+              className={`${
+                isOpen ? "inline" : "hidden"
+              } flex items-center gap-2`}
+            >
+              <CiSettings
+                className="text-[14px] font-bold text-blue-900"
+                style={{ fontSize: "16px", fontWeight: "bolder" }}
+              />
+              Profile Settings
+            </span>
+          </button>
+
+          <button
+            onClick={() => {
               navigate("/adminregister");
             }}
             className={`flex items-center w-full `}
@@ -275,6 +323,7 @@ const Sidebar = () => {
               Create Admin
             </span>
           </button>
+
           <button
             onClick={handleLogout}
             className={`flex items-center w-full pb-4`}

@@ -59,7 +59,6 @@ const Login = () => {
               title: "Signed in successfully",
             });
             navigate("/Dashboard");
-            console.log("you ar login", username, password);
           }
         }
       });

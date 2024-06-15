@@ -103,7 +103,14 @@ const Users = () => {
               <tr key={post.post_id} className="border border-gray-300">
                 <td className="px-6 py-4 border border-gray-300">{post.id}</td>
                 <td className="px-6 py-4 border border-gray-300">
-                  {post.img == null ? <p>no img</p> : post.img}
+                  {post.img == null ? (
+                    <p>no img</p>
+                  ) : (
+                    <img
+                      src={`../upload/${post.img}`}
+                      className="w-[55px] h-[55px] rounded-xl"
+                    />
+                  )}
                 </td>
                 <td className="px-6 py-4 border border-gray-300">
                   {post.username}
