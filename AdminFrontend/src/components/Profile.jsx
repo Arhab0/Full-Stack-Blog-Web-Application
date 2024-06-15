@@ -141,6 +141,9 @@ const Profile = () => {
 
                   <div className="items-center mt-8 sm:mt-14 text-[#202142]">
                     <div className="mb-2 sm:mb-6">
+                      <label htmlFor="" className="text-gray-400 mb-2 text-sm">
+                        Username
+                      </label>
                       <input
                         type="text"
                         id="usename"
@@ -154,6 +157,12 @@ const Profile = () => {
 
                     <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
                       <div className="w-full">
+                        <label
+                          htmlFor=""
+                          className="text-gray-400 mb-2 text-sm"
+                        >
+                          Gender
+                        </label>
                         <input
                           type="text"
                           id="gender"
@@ -166,6 +175,12 @@ const Profile = () => {
                       </div>
 
                       <div className="w-full">
+                        <label
+                          htmlFor=""
+                          className="text-gray-400 mb-2 text-sm"
+                        >
+                          Age
+                        </label>
                         <input
                           type="number"
                           id="age"
@@ -179,6 +194,9 @@ const Profile = () => {
                     </div>
 
                     <div className="mb-2 sm:mb-6">
+                      <label htmlFor="" className="text-gray-400 mb-2 text-sm">
+                        Email
+                      </label>
                       <input
                         type="email"
                         id="email"
@@ -191,6 +209,9 @@ const Profile = () => {
                     </div>
 
                     <div className="mb-2 sm:mb-6">
+                      <label htmlFor="" className="text-gray-400 mb-2 text-sm">
+                        Secret Code
+                      </label>
                       <input
                         type="text"
                         id="secretMessage"
