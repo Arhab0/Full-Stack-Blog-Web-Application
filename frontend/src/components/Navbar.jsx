@@ -169,7 +169,11 @@ const Navbar = () => {
             <h1 className="font-semibold text-[17px]  px-5 my-9">Food</h1>
           </Link>
           <span className="text-teal-600 font-bold cursor-pointer block px-5 my-9">
-            {user?.username}
+            <Link to="/profile">
+              <span className="text-teal-600 font-bold cursor-pointer">
+                {user?.username}
+              </span>
+            </Link>
           </span>
           {isLoggedIn ? (
             <span
