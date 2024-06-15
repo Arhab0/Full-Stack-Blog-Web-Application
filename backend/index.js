@@ -87,10 +87,17 @@ app.post("/register", (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, salt);
 
     const Q =
-      "insert into users (username,email,password,gender,age,role_id,isActive) values(?,?,?,?,?,2,1)";
+      "insert into users (username,email,password,gender,age,secretMessage,role_id,isActive) values(?,?,?,?,?,?,2,1)";
     db.query(
       Q,
-      [req.body.username, req.body.email, hash, req.body.gender, req.body.age],
+      [
+        req.body.username,
+        req.body.email,
+        hash,
+        req.body.gender,
+        req.body.age,
+        req.body.secretMessage,
+      ],
       (err, response) => {
         if (err) return res.json(err);
         return res.json({ message: "User has been created" });

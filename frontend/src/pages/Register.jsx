@@ -11,6 +11,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
   const [age, setAge] = useState();
+  const [secretMessage, setSecretMessage] = useState();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -34,6 +35,7 @@ const Register = () => {
       !email.trim() ||
       !password.trim() ||
       !gender.trim() ||
+      !secretMessage.trim() ||
       age == null
     ) {
       setError("All fields are required");
@@ -62,6 +64,7 @@ const Register = () => {
         password,
         gender,
         age,
+        secretMessage,
       })
       .then((res) => {
         if (res.data.message === "User already exists") {
@@ -134,6 +137,18 @@ const Register = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <input
+          type="text"
+          name="secretMessage"
+          placeholder="Enter your secret code"
+          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          value={secretMessage}
+          onChange={(e) => setSecretMessage(e.target.value)}
+        />
+        <p className="text-sm font-semibold text-justify">
+          Always remember your secret code. It will help you to reset your
+          password!!!
+        </p>
         {error && (
           <p className="text-red-700 font-semibold text-center">{error}</p>
         )}
