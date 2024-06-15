@@ -13,6 +13,7 @@ import Write from "./pages/Write.jsx";
 import SinglePost from "./pages/SinglePost.jsx";
 import Home from "./pages/Home.jsx";
 import UpdatePost from "./pages/UpdatePost.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "resetPassword",
+    element: <ResetPassword />,
   },
 ]);
 

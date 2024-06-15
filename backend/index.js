@@ -170,6 +170,33 @@ app.post("/Adminlogin", (req, res) => {
   });
 });
 
+app.put("/resetPassword", (req, res) => {
+  const email = req.body.email;
+  const secretMessage = req.body.secretMessage;
+  const newPassword = req.body.password;
+  const q = `select * from users where email = ? and secretMessage = ?`;
+  db.query(q, [req.body.email, req.body.secretMessage], (err, result) => {
+    if (err) {
+      return err;
+    } else {
+      if (result.length > 0) {
+        const queryy = `update users set password=? where email=? and secretMessage=?`;
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(newPassword, salt);
+        db.query(queryy, [hash, email, secretMessage], (err, data) => {
+          if (err) {
+            res.send(err);
+          } else {
+            res.json({ message: "Password changed successfully" });
+          }
+        });
+      } else {
+        res.json({ message: "Invalid email or secret message" });
+      }
+    }
+  });
+});
+
 // logout api
 app.post("/logout", (req, res) => {
   res

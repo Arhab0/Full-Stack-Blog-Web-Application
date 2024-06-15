@@ -1,44 +1,64 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { baseUrl } from "../helper/baseUrl";
 
 import axios from "axios";
-import { loginUser } from "../store/authSlice";
 import Swal from "sweetalert2";
 
-const Login = () => {
-  const [username, setUsername] = useState("");
+const ResetPassword = () => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [secretMessage, setSecretMessage] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (isLoggedIn && user.role_id === 2) {
+    if (isLoggedIn) {
       navigate("/");
     } else {
-      navigate("/login");
+      navigate("/resetPassword");
     }
   }, [isLoggedIn]);
 
   axios.defaults.withCredentials = true;
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+    if (
+      !email.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim() ||
+      !secretMessage.trim()
+    ) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (password != confirmPassword) {
+      setError("Password didn't match");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setError("Email is not valid");
+      return;
+    }
     await axios
-      .post(`${baseUrl}/login`, {
-        username,
+      .put(`${baseUrl}/resetPassword`, {
+        email,
+        secretMessage,
         password,
       })
       .then((res) => {
-        if (Object.keys(res.data).length == 1) {
+        if (res.data.message === "Invalid email or secret message") {
           setError(res.data.message);
         } else {
-          dispatch(loginUser(res.data));
           const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
@@ -52,23 +72,31 @@ const Login = () => {
           });
           Toast.fire({
             icon: "success",
-            title: "Signed in successfully",
+            title: "Password changed successfully",
           });
-          navigate("/");
+          navigate("/login");
         }
       });
   };
   return (
     <div className="flex items-center justify-center flex-col h-screen bg-gray-200 p-9 overflow-hidden">
-      <h1 className="text-3xl font-bold text-teal-700 mb-8">Login</h1>
+      <h1 className="text-3xl font-bold text-teal-700 mb-8">Change Password</h1>
       <form className="flex flex-col gap-5 bg-white p-6  w-full max-w-md rounded-lg shadow-md">
         <input
-          type="text"
-          name="username"
-          placeholder="Enter your name"
+          type="email"
+          name="email"
+          placeholder="Enter your email"
           className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="text"
+          name="secretMessage"
+          placeholder="Enter your secret code"
+          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          value={secretMessage}
+          onChange={(e) => setSecretMessage(e.target.value)}
         />
         <input
           type="password"
@@ -78,9 +106,14 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Link to="/resetPassword">
-          <p className="text-blue-800 text-end -mb-11">Forget Password?</p>
-        </Link>
+        <input
+          type="password"
+          name="password"
+          placeholder="Confirm password"
+          className="border-b border-gray-300 p-3 placeholder-gray-500 outline-none w-full"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
         {error && (
           <p className="text-red-700 font-semibold text-center">{error}</p>
         )}
@@ -90,19 +123,11 @@ const Login = () => {
           rounded transition-all ease-out duration-200
           hover:-translate-y-1"
         >
-          Login
+          Save Password
         </button>
-
-        <span className="text-sm">
-          Didn't have account?
-          <Link className=" text-blue-800" to="/register">
-            {" "}
-            Create account
-          </Link>
-        </span>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default ResetPassword;
