@@ -100,7 +100,7 @@ const Profile = () => {
                       <div className="flex flex-col space-y-5 sm:ml-8">
                         <label
                           htmlFor="file"
-                          className="mb-2 font-semibold text-lg text-gray-700"
+                          className="mb-2 font-semibold text-lg sm:text-start text-center text-gray-700"
                         >
                           Upload Profile Pic
                         </label>
@@ -125,7 +125,7 @@ const Profile = () => {
                       <div className="flex flex-col space-y-5 sm:ml-8">
                         <label
                           htmlFor="file"
-                          className="mb-2 font-semibold text-lg text-gray-700"
+                          className="mb-2 font-semibold text-lg sm:text-start text-center text-gray-700"
                         >
                           Change Profile Pic
                         </label>
@@ -229,7 +229,7 @@ const Profile = () => {
                     <div className="flex justify-end">
                       <button
                         type="submit"
-                        className="text-white bg-indigo-700  hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+                        className="text-white bg-indigo-700 sm:mt-0 mt-4 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
                         onClick={handleSubmit}
                       >
                         Save
