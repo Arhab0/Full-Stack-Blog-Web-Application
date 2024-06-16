@@ -47,8 +47,10 @@ const Write = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const imgUrl = await upload();
+    let imgUrl;
+    if (file != null) {
+      imgUrl = await upload();
+    }
     try {
       await axios
         .post(`${baseUrl}/add-post`, {

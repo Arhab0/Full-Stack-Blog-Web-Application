@@ -51,8 +51,11 @@ const Profile = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let imgUrl;
+    if (file != null) {
+      imgUrl = await upload();
+    }
 
-    const imgUrl = await upload();
     try {
       await axios
         .put(`${baseUrl}/update-user/${user?.id}`, {
