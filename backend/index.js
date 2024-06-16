@@ -362,14 +362,45 @@ app.get("/search/:key", (req, res) => {
   const searchTerm = req.params.key;
   const query = `
   select p.id,p.title,p.description,p.img,p.date,p.user_id, c.cat from posts as p join category as c on p.cat_id = c.id
-        WHERE (p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%') and p.isActive = 1 and p.isPending = 0 
-        
-    `;
+        WHERE (p.title LIKE '%${searchTerm}%' OR c.cat LIKE '%${searchTerm}%') and p.isActive = 1 and p.isPending = 0`;
 
   db.query(query, (err, data) => {
     if (err) {
       console.error("Error executing query:", err);
       res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      res.json(data);
+    }
+  });
+});
+
+// post comment api
+app.post("/addComment", (req, res) => {
+  const q =
+    "insert into comments (`comment`, `commentedAt`,`post_id`,`user_id`) values(?,?,?,?)";
+  const values = [
+    req.body.comment,
+    req.body.commentedAt,
+    req.body.post_id,
+    req.body.user_id,
+  ];
+  db.query(q, values, (err, data) => {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json({
+        message: "New comment added",
+      });
+    }
+  });
+});
+
+// get post comment
+app.get("/getComments/:id", (req, res) => {
+  const q = `select c.comment,c.commentedAt,u.username,u.img from comments c join users u on c.user_id = u.id where c.post_id = ${req.params.id}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
     } else {
       res.json(data);
     }

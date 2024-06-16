@@ -18,6 +18,27 @@ const SinglePost = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+
+  const getComments = () => {
+    try {
+      axios.get(`${baseUrl}/getComments/${postId}`).then((res) => {
+        setComments(res.data);
+      });
+    } catch (e) {
+      Swal.fire({
+        title: "Error!",
+        text: e,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+    }
+  };
+
+  useEffect(() => {
+    getComments();
+  }, [postId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +95,36 @@ const SinglePost = () => {
       });
     } catch (err) {
       console.log(err);
+    }
+  };
+  const handleSubmitComment = (e) => {
+    e.preventDefault();
+
+    try {
+      axios
+        .post(`${baseUrl}/addComment`, {
+          comment,
+          commentedAt: moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),
+          post_id: postId,
+          user_id: user?.id,
+        })
+        .then((res) => {
+          var message = res.data.message;
+          Swal.fire({
+            title: "success!",
+            text: message,
+            icon: "success",
+          });
+          getComments();
+          setComment("");
+        });
+    } catch (err) {
+      Swal.fire({
+        title: "Error!",
+        text: err,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     }
   };
 
@@ -155,6 +206,70 @@ const SinglePost = () => {
                 className="md:text-xl text-lg post-description overflow-x-hidden overflow-y-auto whitespace-pre-wrap break-words text-justify"
                 dangerouslySetInnerHTML={{ __html: post.description }}
               />
+            </div>
+
+            {/* comment section */}
+
+            <div className="flex flex-col">
+              <div className="font-extrabold text-xl mt-11">
+                Total comments {comments.length}
+              </div>
+
+              <div className="flex justify-center items-center w-full bg-white">
+                {isLoggedIn == true ? (
+                  <div className="mt-6 mr-11">
+                    <textarea
+                      placeholder="Add your comment..."
+                      className="p-2 focus:outline-1 focus:outline-blue-500 font-bold border-[0.1px] resize-none h-[120px] border-[#9EA5B1] rounded-md md:w-[60vw] w-full"
+                      value={comment}
+                      onChange={(e) => {
+                        setComment(e.target.value);
+                      }}
+                    ></textarea>
+                    <div className="flex justify-end">
+                      <button
+                        onClick={handleSubmitComment}
+                        className="text-sm font-semibold absolute bg-[#4F46E5] w-fit text-white py-2 rounded px-3"
+                      >
+                        Post
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <h1 className="font-bold mt-6">
+                    Please login first to comment...
+                  </h1>
+                )}
+              </div>
+
+              <div className="mt-10">
+                {comments.map((item) => {
+                  return (
+                    <div key={item.id} className="my-7">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-4">
+                          <div>
+                            {item.img != null ? (
+                              <img
+                                src={`../upload/${item.img}`}
+                                className="w-[40px] h-[40px] ml-3 rounded-full"
+                                alt=""
+                              />
+                            ) : (
+                              <FaUser className="w-[30px] ml-6 h-[30px]" />
+                            )}
+                          </div>
+                          <div className="font-bold">{item.username}</div>
+                        </div>
+                        <p className="text-gray-500 text-sm mr-11">
+                          {moment(item.commentedAt).fromNow()}
+                        </p>
+                      </div>
+                      <p className="ml-[70px] mt-1">{item.comment}</p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
