@@ -8,28 +8,31 @@ import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { FaUser } from "react-icons/fa";
 import { baseUrl } from "../helper/baseUrl";
-
+import { MdOutlineSort } from "react-icons/md";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
 const SinglePost = () => {
   const [post, setPost] = useState({});
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [originalComments, setOriginalComments] = useState([]);
+  const [sortOrder, setSortOrder] = useState("newest");
+
   const postId = location.pathname.split("/")[2];
   const navigate = useNavigate();
   const params = useParams();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
 
-  const getComments = () => {
+  const getComments = async () => {
     try {
-      axios.get(`${baseUrl}/getComments/${postId}`).then((res) => {
-        setComments(res.data);
-      });
+      const res = await axios.get(`${baseUrl}/getComments/${postId}`);
+      setOriginalComments(res.data);
+      sortAndSetComments(res.data, sortOrder);
     } catch (e) {
       Swal.fire({
         title: "Error!",
-        text: e,
+        text: e.message,
         icon: "error",
         confirmButtonText: "Ok",
       });
@@ -54,94 +57,97 @@ const SinglePost = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${baseUrl}/deletePost/${params.id}`).then((res) => {
-        if (res.data.message === "Not authenticated") {
-          var message = res.data.message;
-          Swal.fire({
-            title: "success!",
-            text: message,
-            icon: "success",
-            confirmButtonText: "Ok",
-          });
-        } else if (res.data.message === "Invalid token") {
-          var message1 = res.data.message;
-          Swal.fire({
-            title: "success!",
-            text: message1,
-            icon: "success",
-            confirmButtonText: "Ok",
-          });
-        } else if (
-          res.data.message ===
-          "This post doesn't belong to you or does not exist"
-        ) {
-          var message2 = res.data.message;
-          Swal.fire({
-            title: "success!",
-            text: message2,
-            icon: "success",
-            confirmButtonText: "Ok",
-          });
-        } else {
-          var message3 = res.data.message;
-          Swal.fire({
-            title: "success!",
-            text: message3,
-            icon: "success",
-            confirmButtonText: "Ok",
-          });
-          navigate("/");
-        }
+      const res = await axios.delete(`${baseUrl}/deletePost/${params.id}`);
+      let message = res.data.message;
+      Swal.fire({
+        title:
+          message.includes("Not authenticated") ||
+          message.includes("Invalid token") ||
+          message.includes("doesn't belong to you")
+            ? "Error!"
+            : "Success!",
+        text: message,
+        icon:
+          message.includes("Not authenticated") ||
+          message.includes("Invalid token") ||
+          message.includes("doesn't belong to you")
+            ? "error"
+            : "success",
+        confirmButtonText: "Ok",
       });
+      if (
+        !message.includes("Not authenticated") &&
+        !message.includes("Invalid token") &&
+        !message.includes("doesn't belong to you")
+      ) {
+        navigate("/");
+      }
     } catch (err) {
       console.log(err);
     }
   };
-  const handleSubmitComment = (e) => {
-    e.preventDefault();
 
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
     try {
-      axios
-        .post(`${baseUrl}/addComment`, {
-          comment,
-          commentedAt: moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),
-          post_id: postId,
-          user_id: user?.id,
-        })
-        .then((res) => {
-          var message = res.data.message;
-          Swal.fire({
-            title: "success!",
-            text: message,
-            icon: "success",
-          });
-          getComments();
-          setComment("");
-        });
+      const res = await axios.post(`${baseUrl}/addComment`, {
+        comment,
+        commentedAt: moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),
+        post_id: postId,
+        user_id: user?.id,
+      });
+      Swal.fire({
+        title: "Success!",
+        text: res.data.message,
+        icon: "success",
+      });
+      getComments();
+      setComment("");
     } catch (err) {
       Swal.fire({
         title: "Error!",
-        text: err,
+        text: err.message,
         icon: "error",
         confirmButtonText: "Ok",
       });
     }
   };
 
+  const handleSortChange = (e) => {
+    const newSortOrder = e.target.value;
+    setSortOrder(newSortOrder);
+    sortAndSetComments(originalComments, newSortOrder);
+  };
+
+  const sortAndSetComments = (commentsArray, order) => {
+    let sortedComments = [...commentsArray];
+    if (order === "newest") {
+      sortedComments.sort(
+        (a, b) => new Date(b.commentedAt) - new Date(a.commentedAt)
+      );
+    } else if (order === "oldest") {
+      sortedComments.sort(
+        (a, b) => new Date(a.commentedAt) - new Date(b.commentedAt)
+      );
+    }
+    setComments(sortedComments);
+  };
+
+  useEffect(() => {
+    sortAndSetComments(originalComments, sortOrder);
+  }, [originalComments, sortOrder]);
+
   return (
     <div className="px-6 py-32">
-      <div className=" max-w-7xl">
-        <div className="w-[100%]  flex md:flex-row gap-11 flex-col">
-          {/* content */}
+      <div className="max-w-7xl">
+        <div className="w-[100%] flex md:flex-row gap-11 flex-col">
           <div className="md:w-[70%] w-full">
-            {/* user */}
             <img
               className="w-full md:h-auto rounded-md object-cover"
               src={`../upload/${post.postImg}`}
               alt=""
             />
             <div className="flex items-center gap-4 mt-3">
-              {/* info */}
               {post.userImg ? (
                 <img
                   src={`../upload/${post.userImg}`}
@@ -151,55 +157,24 @@ const SinglePost = () => {
               ) : (
                 <FaUser />
               )}
-
-              {isLoggedIn ? (
-                user.username === post.username ? (
-                  <>
-                    <div className="flex gap-2">
-                      <div>
-                        <span className="font-bold text-[20px]">
-                          {post.username}
-                        </span>
-                        <p className="text-sm">
-                          posted {moment(post.date).fromNow()}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1 -mt-5">
-                        <Link to={`/updatePost/${post.id}`}>
-                          <img className="w-6 h-6" src={editLogo} alt="" />
-                        </Link>
-                        <img
-                          onClick={handleDelete}
-                          className="cursor-pointer w-6 h-6"
-                          src={deleteLogo}
-                          alt=""
-                        />
-                      </div>
-                      {/* <div className='md:ml-[450px] sm:ml-[300px] -ml-[-10px] flex gap-1 items-center'>
-                           <MdOutlineRemoveRedEye/> {post.views} views
-                          </div> */}
-                    </div>
-                  </>
-                ) : (
-                  <div>
-                    <span className="font-bold text-[20px]">
-                      {post.username}
-                    </span>
-                    <p className="text-sm">
-                      posted {moment(post.date).fromNow()}
-                    </p>
-                  </div>
-                )
-              ) : (
-                <div>
-                  <span className="font-bold text-[20px]">{post.username}</span>
-                  <p className="text-sm">
-                    posted {moment(post.date).fromNow()}
-                  </p>
+              <div>
+                <span className="font-bold text-[20px]">{post.username}</span>
+                <p className="text-sm">posted {moment(post.date).fromNow()}</p>
+              </div>
+              {isLoggedIn && user.username === post.username && (
+                <div className="flex items-center gap-1">
+                  <Link to={`/updatePost/${post.id}`}>
+                    <img className="w-6 h-6" src={editLogo} alt="" />
+                  </Link>
+                  <img
+                    onClick={handleDelete}
+                    className="cursor-pointer w-6 h-6"
+                    src={deleteLogo}
+                    alt=""
+                  />
                 </div>
               )}
             </div>
-            {/* product info */}
             <div className="mt-9">
               <h1 className="font-bold text-2xl mb-9">{post.title}</h1>
               <div
@@ -208,23 +183,18 @@ const SinglePost = () => {
               />
             </div>
 
-            {/* comment section */}
-
             <div className="flex flex-col">
               <div className="font-extrabold text-xl mt-11">
                 Total comments {comments.length}
               </div>
-
               <div className="flex justify-center items-center w-full bg-white">
-                {isLoggedIn == true ? (
+                {isLoggedIn ? (
                   <div className="mt-6 mr-11">
                     <textarea
                       placeholder="Add your comment..."
                       className="p-2 focus:outline-1 focus:outline-blue-500 font-bold border-[0.1px] resize-none h-[120px] border-[#9EA5B1] rounded-md md:w-[60vw] w-full"
                       value={comment}
-                      onChange={(e) => {
-                        setComment(e.target.value);
-                      }}
+                      onChange={(e) => setComment(e.target.value)}
                     ></textarea>
                     <div className="flex justify-end">
                       <button
@@ -242,40 +212,59 @@ const SinglePost = () => {
                 )}
               </div>
 
+              {comments.length > 1 && (
+                <div className="mt-20 flex gap-3 items-center">
+                  <label
+                    htmlFor="sortOrder"
+                    className="block mb-2 text-sm font-medium text-nowrap text-gray-700"
+                  >
+                    <span className="flex items-center gap-1">
+                      <MdOutlineSort className="text-[25px]" />
+                      Sort by
+                    </span>
+                  </label>
+                  <select
+                    id="sortOrder"
+                    value={sortOrder}
+                    onChange={handleSortChange}
+                    className="border p-2 mr-2 w-24 md:w-auto"
+                  >
+                    <option value="newest">Newest first</option>
+                    <option value="oldest">Oldest first</option>
+                  </select>
+                </div>
+              )}
+
               <div className="mt-10">
-                {comments.map((item) => {
-                  return (
-                    <div key={item.id} className="my-7">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-4">
-                          <div>
-                            {item.img != null ? (
-                              <img
-                                src={`../upload/${item.img}`}
-                                className="w-[40px] h-[40px] ml-3 rounded-full"
-                                alt=""
-                              />
-                            ) : (
-                              <FaUser className="w-[30px] ml-6 h-[30px]" />
-                            )}
-                          </div>
-                          <div className="font-bold">{item.username}</div>
+                {comments.map((item) => (
+                  <div key={item.id} className="my-7">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-4">
+                        <div>
+                          {item.img ? (
+                            <img
+                              src={`../upload/${item.img}`}
+                              className="w-[40px] h-[40px] ml-3 rounded-full"
+                              alt=""
+                            />
+                          ) : (
+                            <FaUser className="w-[30px] ml-6 h-[30px]" />
+                          )}
                         </div>
-                        <p className="text-gray-500 text-sm mr-11">
-                          {moment(item.commentedAt).fromNow()}
-                        </p>
+                        <div className="font-bold">{item.username}</div>
                       </div>
-                      <p className="ml-[70px] mt-1">{item.comment}</p>
+                      <p className="text-gray-500 text-sm mr-11">
+                        {moment(item.commentedAt).fromNow()}
+                      </p>
                     </div>
-                  );
-                })}
+                    <p className="ml-[70px] mt-1">{item.comment}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* menu */}
-
-          <div className="md:w-[30%] w-full md:-mt-6 ">
+          <div className="md:w-[30%] w-full md:-mt-6">
             <Menu cat={post.cat} />
           </div>
         </div>
