@@ -280,60 +280,36 @@ app.get("/post/:id", (req, res) => {
 });
 
 // delete post api
-app.delete("/deletePost/:id", (req, res) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "Not authenticated" });
-
-  jwt.verify(token, secret, (err, userInfo) => {
-    if (err) return res.status(403).json({ message: "Invalid token" });
-
-    const postId = req.params.id;
-    const userId = userInfo.id;
-
-    const q = "DELETE FROM posts WHERE id = ? AND user_id = ?";
-    db.query(q, [postId, userId], (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-      if (result.affectedRows === 0) {
-        return res.status(403).json({
-          message: "This post doesn't belong to you or does not exist",
-        });
-      }
-      return res.json({ message: "Post deleted successfully", token });
-    });
+app.post("/deletePost/:id", (req, res) => {
+  const postId = req.params.id;
+  const q = "DELETE FROM posts WHERE id = ?";
+  db.query(q, [postId], (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    res.json({ message: "Post deleted successfully" });
   });
 });
 
 // add post api
 app.post("/add-post", (req, res) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "Not authenticated" });
-
-  jwt.verify(token, secret, (err, userInfo) => {
+  const q =
+    "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`,`isPending`,`isRejected`) values(?,1,1,0)";
+  const values = [
+    req.body.title,
+    req.body.description,
+    req.body.img,
+    req.body.date,
+    req.body.user_id,
+    req.body.cat_id,
+  ];
+  db.query(q, [values], (err, data) => {
     if (err) {
-      return res.status(403).json({ message: "token is not valid" });
+      res.json(err);
     } else {
-      const q =
-        "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`,`isPending`,`isRejected`) values(?,1,1,0)";
-      const values = [
-        req.body.title,
-        req.body.description,
-        req.body.img,
-        req.body.date,
-        userInfo.id,
-        req.body.cat_id,
-      ];
-      db.query(q, [values], (err, data) => {
-        if (err) {
-          res.json(err);
-        } else {
-          res.json({
-            message:
-              "Your post is in the pending stage. Once the admin approves your post, it will be on the website.",
-          });
-        }
+      res.json({
+        message:
+          "Your post is in the pending stage. Once the admin approves your post, it will be on the website.",
       });
     }
   });

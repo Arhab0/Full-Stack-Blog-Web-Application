@@ -25,18 +25,9 @@ const SinglePost = () => {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const getComments = async () => {
-    try {
-      const res = await axios.get(`${baseUrl}/getComments/${postId}`);
-      setOriginalComments(res.data);
-      sortAndSetComments(res.data, sortOrder);
-    } catch (e) {
-      Swal.fire({
-        title: "Error!",
-        text: e.message,
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
-    }
+    const res = await axios.get(`${baseUrl}/getComments/${postId}`);
+    setOriginalComments(res.data);
+    sortAndSetComments(res.data, sortOrder);
   };
 
   useEffect(() => {
@@ -57,31 +48,14 @@ const SinglePost = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(`${baseUrl}/deletePost/${params.id}`);
+      const res = await axios.post(`${baseUrl}/deletePost/${params.id}`);
       let message = res.data.message;
       Swal.fire({
-        title:
-          message.includes("Not authenticated") ||
-          message.includes("Invalid token") ||
-          message.includes("doesn't belong to you")
-            ? "Error!"
-            : "Success!",
+        title: "Success!",
         text: message,
-        icon:
-          message.includes("Not authenticated") ||
-          message.includes("Invalid token") ||
-          message.includes("doesn't belong to you")
-            ? "error"
-            : "success",
-        confirmButtonText: "Ok",
+        icon: "success",
       });
-      if (
-        !message.includes("Not authenticated") &&
-        !message.includes("Invalid token") &&
-        !message.includes("doesn't belong to you")
-      ) {
-        navigate("/");
-      }
+      navigate("/");
     } catch (err) {
       console.log(err);
     }

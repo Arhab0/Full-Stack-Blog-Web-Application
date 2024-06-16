@@ -7,6 +7,7 @@ import moment from "moment";
 import { baseUrl } from "../helper/baseUrl";
 import Modal from "../components/Modal";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const Write = () => {
   const [values, setValues] = useState("");
@@ -14,7 +15,8 @@ const Write = () => {
   const [catId, setCatId] = useState();
   const [title, setTitle] = useState("");
   const [file, setFile] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(true); // State to control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  const { user } = useSelector((state) => state.auth);
 
   const modules = {
     toolbar: [
@@ -59,6 +61,7 @@ const Write = () => {
           img: file ? imgUrl : "",
           cat,
           cat_id: catId,
+          user_id: user?.id,
           date: moment(Date.now()).format("YYYY-MM-DD HH-mm-ss"),
         })
         .then((res) => {
