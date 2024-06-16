@@ -21,6 +21,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 const secret = "anything_secret";
+const adminSecret = "admin_secret";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -167,9 +168,11 @@ app.post("/Adminlogin", (req, res) => {
         res.json({ message: "Wrong Admin username or password" });
       } else {
         const { password, ...other } = data[0];
-        const token = jwt.sign({ id: data[0].id }, secret, { expiresIn: "1d" });
+        const token = jwt.sign({ id: data[0].id }, adminSecret, {
+          expiresIn: "1d",
+        });
 
-        res.cookie("token", token).json(other);
+        res.cookie("adminToken", token).json(other);
       }
     } else {
       res.send({ message: "No Admin found with this username" });
