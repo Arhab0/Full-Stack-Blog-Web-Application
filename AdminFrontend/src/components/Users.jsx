@@ -279,7 +279,7 @@ const Users = () => {
           placeholder="Filter by username"
           value={usernameFilter}
           onChange={(e) => setUsernameFilter(e.target.value)}
-          className="border p-2 mr-2"
+          className="border p-2 mr-2 sm:w-48 w-[160px]"
         />
         <button
           onClick={handleFilter}
@@ -324,11 +324,13 @@ const Users = () => {
                   {user.img == null ? (
                     <p>No img</p>
                   ) : (
-                    <img
-                      src={`../upload/${user.img}`}
-                      className="w-[55px] h-[55px] rounded-xl"
-                      alt="User"
-                    />
+                    <div className="w-[80px] h-[60px]">
+                      <img
+                        src={`../upload/${user.img}`}
+                        className="w-full h-[60px] rounded-md"
+                        alt="User"
+                      />
+                    </div>
                   )}
                 </td>
                 <td className="px-6 py-4 border border-gray-300">

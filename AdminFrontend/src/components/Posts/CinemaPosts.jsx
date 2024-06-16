@@ -64,7 +64,7 @@ const CinemaPosts = () => {
           placeholder="Filter by author"
           value={authorFilter}
           onChange={(e) => setAuthorFilter(e.target.value)}
-          className="border p-2 mr-2"
+          className="border p-2 mr-2 sm:w-52 w-[160px]"
         />
         <button
           onClick={handleFilter}
