@@ -227,7 +227,7 @@ const SinglePost = () => {
                     id="sortOrder"
                     value={sortOrder}
                     onChange={handleSortChange}
-                    className="border p-2 mr-2 w-24 md:w-auto"
+                    className="border p-2 mr-2 w-36 md:w-auto"
                   >
                     <option value="newest">Newest first</option>
                     <option value="oldest">Oldest first</option>
