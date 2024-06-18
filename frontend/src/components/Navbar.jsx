@@ -118,14 +118,16 @@ const Navbar = () => {
               Login
             </Link>
           )}
-          <span
-            className="rounded-full bg-[#b9e7e7] w-[50px] h-[50px] flex justify-center items-center
+          {isLoggedIn && (
+            <span
+              className="rounded-full bg-[#b9e7e7] w-[50px] h-[50px] flex justify-center items-center
               hover:w-[50px] hover:h-[50px] hover:bg-white hover:text-teal-600 hover:border-[1px]
               hover:border-teal-700
             "
-          >
-            <Link to="/write">Write</Link>
-          </span>
+            >
+              <Link to="/write">Write</Link>
+            </span>
+          )}
         </div>
 
         <div className="md:hidden pr-5">
@@ -200,9 +202,11 @@ const Navbar = () => {
               hover:border-teal-700
             "
           >
-            <Link onClick={() => setToggle(false)} to="/write">
-              Write
-            </Link>
+            {isLoggedIn && (
+              <Link onClick={() => setToggle(false)} to="/write">
+                Write
+              </Link>
+            )}
           </span>
         </div>
       </div>
