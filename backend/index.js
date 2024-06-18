@@ -294,7 +294,7 @@ app.post("/deletePost/:id", (req, res) => {
 // add post api
 app.post("/add-post", (req, res) => {
   const q =
-    "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`,`isPending`,`isRejected`) values(?,1,1,0)";
+    "insert into posts (`title`, `description`,`img`,`date`,`user_id`,`cat_id`,`isActive`,`isPending`,`isRejected`) values(?,0,1,0)";
   const values = [
     req.body.title,
     req.body.description,
@@ -449,7 +449,7 @@ app.get("/rejectedpostscount", (req, res) => {
 
 // getting post by category
 app.get("/AdminGetArtPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'art' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'art' and p.isPending = 0`;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -459,7 +459,7 @@ app.get("/AdminGetArtPost", (req, res) => {
 });
 
 app.get("/AdminGetSciencePost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'science' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'science' and p.isPending = 0`;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -469,7 +469,7 @@ app.get("/AdminGetSciencePost", (req, res) => {
 });
 
 app.get("/AdminGetTechnologyPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'technology' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'technology' and p.isPending = 0`;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -479,7 +479,7 @@ app.get("/AdminGetTechnologyPost", (req, res) => {
 });
 
 app.get("/AdminGetCinemaPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'cinema' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'cinema' and p.isPending = 0`;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -489,7 +489,7 @@ app.get("/AdminGetCinemaPost", (req, res) => {
 });
 
 app.get("/AdminGetDesignPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'design' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'design' and p.isPending = 0`;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -499,7 +499,7 @@ app.get("/AdminGetDesignPost", (req, res) => {
 });
 
 app.get("/AdminGetFoodPost", (req, res) => {
-  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'food' `;
+  const q = `SELECT p.id AS post_id, p.user_id, p.cat_id, u.role_id, u.username, p.title,p.img AS post_img, p.date, c.cat AS category, u.email, u.img AS userImg, r.role, u.isActive AS UserIsActive, p.isActive AS PostIsActive FROM posts AS p JOIN category AS c ON p.cat_id = c.id JOIN users AS u ON u.id = p.user_id JOIN roles AS r ON r.id = u.role_id where c.cat = 'food' and p.isPending = 0`;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
@@ -614,7 +614,7 @@ app.get("/pendingPosts", (req, res) => {
 
 app.put("/approvePost/:id", (req, res) => {
   const postId = req.params.id;
-  const q = `update posts set isPending = 0 where id = ${postId}`;
+  const q = `update posts set isPending = 0,isActive=1 where id = ${postId}`;
   db.query(q, (err, results) => {
     if (err) {
       res.send(err);
@@ -625,7 +625,7 @@ app.put("/approvePost/:id", (req, res) => {
 
 app.put("/rejectPost/:id", (req, res) => {
   const postId = req.params.id;
-  const q = `update posts set isRejected = 1 where id = ${postId}`;
+  const q = `update posts set isRejected = 1,isActive=0 where id = ${postId}`;
   db.query(q, (err, results) => {
     if (err) {
       res.send(err);
