@@ -342,28 +342,28 @@ const Users = () => {
                 <td className="px-6 py-4 border border-gray-300">
                   {user.total_post}
                 </td>
-                <td className="px-6 py-4 border cursor-pointer border-gray-300">
+                <td className="px-6 py-4 border border-gray-300">
                   {user.isActive?.data?.[0] === 1 ? (
-                    <p className="bg-green-400 text-center rounded-lg px-5 py-2">
+                    <p className="bg-green-400 text-center cursor-default rounded-lg px-5 py-2">
                       Active
                     </p>
                   ) : (
-                    <p className="bg-red-500 text-center rounded-lg px-5 py-2">
+                    <p className="bg-red-500 text-center rounded-lg cursor-default px-5 py-2">
                       Disabled
                     </p>
                   )}
                 </td>
-                <td className="px-6 py-4 border cursor-pointer underline border-gray-300">
+                <td className="px-6 py-4 border underline border-gray-300">
                   {user.isActive?.data?.[0] === 1 ? (
                     <p
-                      className="text-center px-5 py-2"
+                      className="text-center px-5 py-2 cursor-pointer"
                       onClick={() => handleDeActivate(user.id)}
                     >
                       DeActivate
                     </p>
                   ) : (
                     <p
-                      className="text-center px-5 py-2"
+                      className="text-center px-5 py-2 cursor-pointer"
                       onClick={() => handleReActivate(user.id)}
                     >
                       Activate

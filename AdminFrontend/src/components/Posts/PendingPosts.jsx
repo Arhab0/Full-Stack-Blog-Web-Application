@@ -145,20 +145,20 @@ const PendingPosts = () => {
                 <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {moment(post.date).fromNow()}
                 </td>
-                <td className="px-6 py-4 border cursor-pointer border-gray-300">
+                <td className="px-6 py-4 border border-gray-300">
                   {post.isRejected?.data?.[0] === 1 ? (
-                    <p className="px-5 py-3 rounded-md bg-red-500 font-capitalize font-semibold">
+                    <p className="px-5 py-3 rounded-md bg-red-500 cursor-default font-capitalize font-semibold">
                       Rejected
                     </p>
                   ) : (
-                    <p className="px-5 py-3 rounded-md bg-yellow-300 font-capitalize font-semibold">
+                    <p className="px-5 py-3 rounded-md bg-yellow-300 cursor-default font-capitalize font-semibold">
                       Pending
                     </p>
                   )}
                 </td>
-                <td className="px-6 py-4 border border-gray-300 cursor-pointer">
+                <td className="px-6 py-4 border border-gray-300">
                   <Link to={`/approvepost/${post.post_id}`}>
-                    <p className="underline">View</p>
+                    <p className="underline cursor-pointer">View</p>
                   </Link>
                 </td>
               </tr>

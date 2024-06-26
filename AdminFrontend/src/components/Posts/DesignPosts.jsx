@@ -128,20 +128,20 @@ const DesignPosts = () => {
                 <td className="px-6 py-4 border text-nowrap border-gray-300">
                   {moment(post.date).fromNow()}
                 </td>
-                <td className="px-6 py-4 border cursor-pointer border-gray-300">
+                <td className="px-6 py-4 border border-gray-300">
                   {post.PostIsActive?.data?.[0] === 1 ? (
-                    <p className="bg-green-400 text-center rounded-lg px-5 py-2">
+                    <p className="bg-green-400 cursor-default text-center rounded-lg px-5 py-2">
                       Active
                     </p>
                   ) : (
-                    <p className="bg-red-500 text-center rounded-lg px-5 py-2">
+                    <p className="bg-red-500 cursor-default text-center rounded-lg px-5 py-2">
                       Disabled
                     </p>
                   )}
                 </td>
-                <td className="px-6 py-4 border border-gray-300 cursor-pointer">
+                <td className="px-6 py-4 border border-gray-300">
                   <Link to={`/post/${post.post_id}`}>
-                    <p className="underline">View</p>
+                    <p className="underline cursor-pointer">View</p>
                   </Link>
                 </td>
               </tr>
