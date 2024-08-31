@@ -11,12 +11,18 @@ import { baseUrl } from "../helper/baseUrl";
 import { MdOutlineSort } from "react-icons/md";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
-
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdEdit } from "react-icons/md";
 const SinglePost = () => {
   const [post, setPost] = useState({});
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [originalComments, setOriginalComments] = useState([]);
+  const [isCommentMenuOpen, setIsCommentMenuOpen] = useState(true);
+  const [commentId, setCommentId] = useState(0);
+  const [isEditOn, setIsEditOn] = useState(false);
+  const [editedComment, setEditComment] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
 
   const postId = location.pathname.split("/")[2];
@@ -28,6 +34,7 @@ const SinglePost = () => {
     const res = await axios.get(`${baseUrl}/getComments/${postId}`);
     setOriginalComments(res.data);
     sortAndSetComments(res.data, sortOrder);
+    console.log(res.data);
   };
 
   useEffect(() => {
@@ -39,6 +46,7 @@ const SinglePost = () => {
       try {
         const res = await axios.get(`${baseUrl}/post/${postId}`);
         setPost(res.data);
+        localStorage.setItem("username_", res.data.username);
       } catch (err) {
         console.log(err);
       }
@@ -70,11 +78,7 @@ const SinglePost = () => {
         post_id: postId,
         user_id: user?.id,
       });
-      Swal.fire({
-        title: "Success!",
-        text: res.data.message,
-        icon: "success",
-      });
+      console.log(res);
       getComments();
       setComment("");
     } catch (err) {
@@ -111,6 +115,34 @@ const SinglePost = () => {
     sortAndSetComments(originalComments, sortOrder);
   }, [originalComments, sortOrder]);
 
+  const deleteComment = async (id) => {
+    try {
+      const res = await axios.delete(`${baseUrl}/DeleteComment/${id}`);
+      let message = res.data.message;
+      Swal.fire({
+        title: "Success!",
+        text: message,
+        icon: "success",
+      });
+      getComments();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const editComment = async (id) => {
+    try {
+      const res = await axios.put(`${baseUrl}/editingComment/${id}`, {
+        comment: editedComment,
+      });
+      console.log(res);
+      setIsEditOn(!isEditOn);
+      getComments();
+      editedComment("");
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
   return (
     <div className="px-6 py-32">
       <div className="max-w-7xl">
@@ -201,7 +233,7 @@ const SinglePost = () => {
                     id="sortOrder"
                     value={sortOrder}
                     onChange={handleSortChange}
-                    className="border p-2 mr-2 w-36 md:w-auto"
+                    className="border p-2 mr-2 w-36 md:w-auto outline-none"
                   >
                     <option value="newest">Newest first</option>
                     <option value="oldest">Oldest first</option>
@@ -226,12 +258,118 @@ const SinglePost = () => {
                           )}
                         </div>
                         <div className="font-bold">{item.username}</div>
+                        <p className="text-gray-500 text-sm mr-11 flex items-center">
+                          {moment(item.commentedAt).fromNow()}{" "}
+                          {item.edited?.data?.[0] === 1 ? (
+                            <p className="ml-2">( edited )</p>
+                          ) : (
+                            ""
+                          )}
+                        </p>
                       </div>
-                      <p className="text-gray-500 text-sm mr-11">
-                        {moment(item.commentedAt).fromNow()}
-                      </p>
+                      {(isLoggedIn == true && user.id === item.user_id) ||
+                      localStorage.getItem("username_") === user.username ? (
+                        <div className="relative">
+                          <BsThreeDotsVertical
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setIsCommentMenuOpen(!isCommentMenuOpen);
+                              setCommentId(item.id);
+                            }}
+                          />
+                          {commentId === item.id ? (
+                            isCommentMenuOpen === true ? (
+                              <div
+                                className="absolute"
+                                style={{ right: "4px", top: "18px" }}
+                              >
+                                <ul
+                                  className="bg-[#f9f9f9] rounded-md shadow-lg border border-gray-200 text-gray-600"
+                                  style={{
+                                    padding: "10px",
+                                    height: "auto",
+                                    width: "90px",
+                                    transition: "all 0.3s ease-in-out",
+                                  }}
+                                >
+                                  <li
+                                    className="hover:underline cursor-pointer mb-2 flex items-center"
+                                    onClick={() => {
+                                      deleteComment(item.id);
+                                    }}
+                                  >
+                                    <RiDeleteBin6Line />{" "}
+                                    <p className="ml-2">Delete</p>
+                                  </li>
+                                  {user.id === item.user_id && (
+                                    <li
+                                      className="hover:underline cursor-pointer flex items-center"
+                                      onClick={() => {
+                                        setIsEditOn(true);
+                                        setIsCommentMenuOpen(
+                                          !isCommentMenuOpen
+                                        );
+                                        setEditComment(item.comment);
+                                      }}
+                                    >
+                                      <MdEdit /> <p className="ml-2">Edit</p>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            ) : (
+                              ""
+                            )
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
-                    <p className="ml-[70px] mt-1">{item.comment}</p>
+                    {isEditOn === true && commentId === item.id ? (
+                      <div>
+                        <input
+                          type="text"
+                          className="ml-[70px] mt-1 w-[90%] bg-white overflow-x-hidden overflow-y-auto whitespace-pre-wrap break-words text-justify border-b-[1px] border-gray-300 focus:border-gray-500 outline-none transition-colors duration-300"
+                          value={editedComment}
+                          onChange={(e) => {
+                            setEditComment(e.target.value);
+                          }}
+                        />
+                        <div className="flex items-center justify-between mt-3">
+                          <div></div>
+                          <div className="flex items-center gap-2">
+                            <p
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setIsEditOn(!isEditOn);
+                                getComments();
+                              }}
+                            >
+                              Cancel
+                            </p>
+                            <button
+                              onClick={() => {
+                                editComment(item.id);
+                              }}
+                              className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-300"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <input
+                        style={{ outline: "none" }}
+                        type="text"
+                        className="ml-[70px] mt-1 bg-white overflow-x-hidden overflow-y-auto whitespace-pre-wrap break-words text-justify"
+                        value={item.comment}
+                        disabled
+                      />
+                    )}
                   </div>
                 ))}
               </div>

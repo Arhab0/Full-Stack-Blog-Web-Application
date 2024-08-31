@@ -353,7 +353,7 @@ app.get("/search/:key", (req, res) => {
 // post comment api
 app.post("/addComment", (req, res) => {
   const q =
-    "insert into comments (`comment`, `commentedAt`,`post_id`,`user_id`) values(?,?,?,?)";
+    "insert into comments (`comment`, `commentedAt`,`post_id`,`user_id`,`edited`) values(?,?,?,?,0)";
   const values = [
     req.body.comment,
     req.body.commentedAt,
@@ -373,12 +373,35 @@ app.post("/addComment", (req, res) => {
 
 // get post comment
 app.get("/getComments/:id", (req, res) => {
-  const q = `select c.comment,c.commentedAt,u.username,u.img from comments c join users u on c.user_id = u.id where c.post_id = ${req.params.id}`;
+  const q = `select c.id,c.edited,c.comment,c.commentedAt,u.username,u.img,c.user_id,u.username from comments c join users u on c.user_id = u.id where c.post_id = ${req.params.id}`;
   db.query(q, (err, data) => {
     if (err) {
       res.send(err);
     } else {
       res.json(data);
+    }
+  });
+});
+
+// delete comment
+app.delete("/DeleteComment/:id", (req, res) => {
+  const q = `delete from comments where id = ${req.params.id}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json({ message: "Comment has been successfully deleted" });
+    }
+  });
+});
+
+app.put("/editingComment/:id", (req, res) => {
+  const q = `update comments set comment =?,edited=1 where id = ${req.params.id}`;
+  db.query(q, req.body.comment, (err, data) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send({ message: "Comment has been successfully updated" });
     }
   });
 });
