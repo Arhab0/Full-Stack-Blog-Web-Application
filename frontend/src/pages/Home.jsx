@@ -15,6 +15,13 @@ const Home = () => {
     fetchData();
   }, [cat, error]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [cat, currentPage]);
+
   const fetchData = async () => {
     try {
       const res = await axios.get(`${baseUrl}/posts${cat}`);
