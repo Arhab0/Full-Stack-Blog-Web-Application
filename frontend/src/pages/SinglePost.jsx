@@ -330,14 +330,21 @@ const SinglePost = () => {
                     </div>
                     {isEditOn === true && commentId === item.id ? (
                       <div>
-                        <input
+                        <textarea
                           type="text"
-                          className="ml-[70px] mt-1 w-[90%] bg-white overflow-x-hidden overflow-y-auto whitespace-pre-wrap break-words text-justify border-b-[1px] border-gray-300 focus:border-gray-500 outline-none transition-colors duration-300"
-                          value={editedComment}
+                          className="ml-[5%] mt-1 w-[90%] md:ml-[70px] bg-white overflow-x-hidden whitespace-pre-wrap break-words text-justify border-b-[1px] border-gray-300 focus:border-gray-500 outline-none transition-colors duration-300"
+                          style={{
+                            height: `${
+                              item.comment.length > 100 ? "150px" : "auto"
+                            } `,
+                          }}
                           onChange={(e) => {
                             setEditComment(e.target.value);
                           }}
-                        />
+                        >
+                          {item.comment}
+                        </textarea>
+
                         <div className="flex items-center justify-between mt-3">
                           <div></div>
                           <div className="flex items-center gap-2">
@@ -362,12 +369,9 @@ const SinglePost = () => {
                         </div>
                       </div>
                     ) : (
-                      <input
-                        style={{ outline: "none" }}
-                        type="text"
-                        className="ml-[70px] mt-1 bg-white overflow-x-hidden overflow-y-auto whitespace-pre-wrap break-words text-justify"
-                        value={item.comment}
-                        disabled
+                      <div
+                        className="ml-[70px] mt-1 overflow-x-hidden overflow-y-auto whitespace-pre-wrap break-words text-justify"
+                        dangerouslySetInnerHTML={{ __html: item.comment }}
                       />
                     )}
                   </div>
