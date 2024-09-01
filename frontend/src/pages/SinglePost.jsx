@@ -268,7 +268,7 @@ const SinglePost = () => {
                         </p>
                       </div>
                       {(isLoggedIn == true && user.id === item.user_id) ||
-                      localStorage.getItem("username_") === user.username ? (
+                      localStorage?.getItem("username_") === user?.username ? (
                         <div className="relative">
                           <BsThreeDotsVertical
                             className="cursor-pointer"
@@ -301,7 +301,7 @@ const SinglePost = () => {
                                     <RiDeleteBin6Line />{" "}
                                     <p className="ml-2">Delete</p>
                                   </li>
-                                  {user.id === item.user_id && (
+                                  {user?.id === item.user_id && (
                                     <li
                                       className="hover:underline cursor-pointer flex items-center"
                                       onClick={() => {
