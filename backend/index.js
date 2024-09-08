@@ -350,6 +350,8 @@ app.get("/search/:key", (req, res) => {
   });
 });
 
+// =========================== Comments api
+
 // post comment api
 app.post("/addComment", (req, res) => {
   const q =
@@ -395,9 +397,76 @@ app.delete("/DeleteComment/:id", (req, res) => {
   });
 });
 
+// edit comment
 app.put("/editingComment/:id", (req, res) => {
   const q = `update comments set comment =?,edited=1 where id = ${req.params.id}`;
   db.query(q, req.body.comment, (err, data) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send({ message: "Comment has been successfully updated" });
+    }
+  });
+});
+
+// add reply comment
+app.post("/addReplyComment", (req, res) => {
+  const q =
+    "insert into replyComments (`reply`, `repliedAt`,`post_id`,`repliedBy_id`,`repliedTo_id`,`comment_id`) values(?,?,?,?,?,?)";
+  const values = [
+    req.body.reply,
+    req.body.repliedAt,
+    req.body.post_id,
+    req.body.repliedBy_id,
+    req.body.repliedTo_id,
+    req.body.comment_id,
+  ];
+  db.query(q, values, (err, data) => {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json({
+        message: "Reply added",
+      });
+    }
+  });
+});
+
+// get reply comments
+app.get("/getReplyComments/:id", (req, res) => {
+  const q = `
+  select rc.id,rc.reply,rc.isEdited,rc.comment_id as repliedCommentId,rc.repliedTo_id,rc.repliedBy_id,
+  rc.repliedAt,uRepliedBy.username as repliedByUser,uRepliedTo.username as repliedToUser,uRepliedBy.img,rc.post_id
+from replycomments rc 
+join comments c on c.id = rc.comment_id
+join users uRepliedBy on uRepliedBy.id = rc.repliedBy_id
+join users uRepliedTo on uRepliedTo.id = rc.repliedTo_id
+join posts p on p.id = rc.post_id
+where p.id = ${req.params.id}
+  `;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(data);
+    }
+  });
+});
+
+app.delete("/DeleteReplyComment/:id", (req, res) => {
+  const q = `delete from replyComments where id = ${req.params.id}`;
+  db.query(q, (err, data) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json({ message: "Comment has been successfully deleted" });
+    }
+  });
+});
+
+app.put("/editingReplyComment/:id", (req, res) => {
+  const q = `update replyComments set reply =?,isEdited=1 where id = ${req.params.id}`;
+  db.query(q, req.body.reply, (err, data) => {
     if (err) {
       res.send(err);
     } else {
