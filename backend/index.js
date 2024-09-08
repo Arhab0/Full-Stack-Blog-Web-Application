@@ -143,10 +143,17 @@ app.post("/login", (req, res) => {
       if (!isPasswordCorrect) {
         res.json({ message: "Wrong username or password" });
       } else {
-        const { password, email, ...other } = data[0];
-        const token = jwt.sign({ id: data[0].id }, secret, { expiresIn: "1d" });
+        const { rejectPostCount } = data[0];
+        if (rejectPostCount === 3) {
+          res.send({ message: "You have banned from this website" });
+        } else {
+          const { password, email, ...other } = data[0];
+          const token = jwt.sign({ id: data[0].id }, secret, {
+            expiresIn: "1d",
+          });
 
-        res.cookie("token", token).json(other);
+          res.cookie("token", token).json(other);
+        }
       }
     } else {
       res.send({ message: "No user found" });
@@ -717,12 +724,119 @@ app.put("/approvePost/:id", (req, res) => {
 
 app.put("/rejectPost/:id", (req, res) => {
   const postId = req.params.id;
-  const q = `update posts set isRejected = 1,isActive=0 where id = ${postId}`;
-  db.query(q, (err, results) => {
+
+  const getUserIdQuery = `SELECT user_id FROM posts WHERE id = ?`;
+  db.query(getUserIdQuery, [postId], (err, postResults) => {
     if (err) {
-      res.send(err);
+      return res.status(500).json({ error: "Error fetching post" });
     }
-    res.json({ message: "Post has been rejected" });
+
+    if (postResults.length === 0) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const userId = postResults[0].user_id;
+
+    const getRejectCountQuery = `SELECT rejectPostCount FROM users WHERE id = ?`;
+    db.query(getRejectCountQuery, [userId], (err, userResults) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching user data" });
+      }
+
+      if (userResults.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      let rejectCount = userResults[0].rejectPostCount;
+
+      if (rejectCount === 0) {
+        const updateRejectCountQuery = `UPDATE users SET rejectPostCount = 1 WHERE id = ?`;
+
+        db.query(updateRejectCountQuery, [userId], (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Error updating rejectPostCount" });
+          }
+
+          const updatePostQuery = `UPDATE posts SET isRejected = 1, isActive = 0 WHERE id = ?`;
+
+          db.query(updatePostQuery, [postId], (err) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Error updating post status" });
+            }
+
+            res.json({ message: "Post has been rejected" });
+          });
+        });
+      } else if (rejectCount === 1) {
+        const updateRejectCountQuery = `UPDATE users SET rejectPostCount = 2 WHERE id = ?`;
+
+        db.query(updateRejectCountQuery, [userId], (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Error updating rejectPostCount" });
+          }
+
+          const updatePostQuery = `UPDATE posts SET isRejected = 1, isActive = 0 WHERE id = ?`;
+
+          db.query(updatePostQuery, [postId], (err) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Error updating post status" });
+            }
+
+            res.json({ message: "Post has been rejected" });
+          });
+        });
+      } else if (rejectCount === 2) {
+        const updateRejectCountQuery = `UPDATE users SET rejectPostCount = 3 WHERE id = ?`;
+
+        db.query(updateRejectCountQuery, [userId], (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Error updating rejectPostCount" });
+          }
+
+          const updatePostQuery = `UPDATE posts SET isRejected = 1, isActive = 0 WHERE id = ?`;
+
+          db.query(updatePostQuery, [postId], (err) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Error updating post status" });
+            }
+            res.json({ message: "Post has been rejected" });
+          });
+        });
+      } else {
+        const updateRejectCountQuery = `UPDATE users SET isActive = 0 WHERE id = ?`;
+
+        db.query(updateRejectCountQuery, [userId], (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Error updating rejectPostCount" });
+          }
+
+          const updatePostQuery = `UPDATE posts SET isRejected = 1, isActive = 0 WHERE id = ?`;
+
+          db.query(updatePostQuery, [postId], (err) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: "Error updating post status" });
+            }
+            res.json({ message: "Post has been rejected" });
+          });
+        });
+      }
+    });
   });
 });
 
