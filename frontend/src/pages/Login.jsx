@@ -36,7 +36,15 @@ const Login = () => {
       })
       .then((res) => {
         if (Object.keys(res.data).length == 1) {
-          setError(res.data.message);
+          if (res.data.message === "You have banned from this website") {
+            Swal.fire({
+              title: "Error!",
+              text: "You have banned from this website",
+              icon: "error",
+            });
+          } else {
+            setError(res.data.message);
+          }
         } else {
           dispatch(loginUser(res.data));
           const Toast = Swal.mixin({
